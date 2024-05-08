@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+
+<!-- native为内部消息，common是公共消息每个模块都能使用 -->
+<protocols>
+    <module id="1" name="native">
+        <protocol location="com.zfoo.net.router.attachment.SignalAttachment"/>
+    </module>
+
+    <module id="2" name="common">
+        <protocol location="com.zfoo.net.packet.common.Message"/>
+        <protocol location="com.zfoo.net.packet.common.Error"/>
+        <protocol location="com.zfoo.net.packet.common.Heartbeat"/>
+        <protocol location="com.zfoo.net.packet.common.Ping"/>
+        <protocol location="com.zfoo.net.packet.common.Pong"/>
+    </module>
+
+    <module id="3" name="spider">
+        <protocol id="1000" location="com.zfoo.ai.simulator.packet.SimulatorRegisterAsk"/>
+        <protocol id="1001" location="com.zfoo.ai.simulator.packet.SimulatorRegisterAnswer"/>
+        <protocol id="1010" location="com.zfoo.ai.simulator.packet.SimulatorChatAsk"/>
+        <protocol id="1011" location="com.zfoo.ai.simulator.packet.SimulatorChatAnswer"/>
+        <protocol id="1021" location="com.zfoo.ai.simulator.packet.SimulatorStatusAsk"/>
+        <protocol id="1100" location="com.zfoo.ai.simulator.packet.ChatBotRequest"/>
+        <protocol id="1101" location="com.zfoo.ai.simulator.packet.ChatBotNotice"/>
+        <protocol id="1102" location="com.zfoo.ai.simulator.packet.ChatBotRegisterRequest"/>
+        <protocol id="1103" location="com.zfoo.ai.simulator.packet.ChatBotRegisterResponse"/>
+        <protocol id="1200" location="com.zfoo.ai.simulator.packet.ClipboardLockAsk"/>
+        <protocol id="1201" location="com.zfoo.ai.simulator.packet.ClipboardLockAnswer"/>
+        <protocol id="1202" location="com.zfoo.ai.simulator.packet.ClipboardUnlockAsk"/>
+        <protocol id="1203" location="com.zfoo.ai.simulator.packet.ClipboardUnlockAnswer"/>
+    </module>
+
+</protocols>

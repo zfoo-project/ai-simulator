@@ -1,0 +1,22 @@
+logging:
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss} [%clr(%5level)] [%thread] %clr(%logger{20}.%M){cyan}\(%F:%line\) - %msg%n'
+
+simulator:
+  port: 17313
+  nodePath: C:/Program Files/nodejs/node.exe
+  chromePath: D:\Project\puppeteer-start\puppeteer\chrome\win64-123.0.6312.122\chrome-win64\chrome.exe
+  workingPath: D:/Project/puppeteer-start
+  headless: false
+  simulators:
+#    - alibaba
+#    - baidu
+#    - tencent
+#    - openai
+
+
+net:
+  id: netConfig
+  protocol-location: protocol.xml
+  code-languages: 0
+  fold-protocol: true

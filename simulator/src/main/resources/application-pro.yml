@@ -1,0 +1,15 @@
+logging:
+  pattern:
+    file: '%d{yyyy-MM-dd HH:mm:ss} [%5level] [%thread] %-28logger{20} : %msg%n'
+  file:
+    path: ./
+
+jiucai:
+  broker:
+    port: 17313
+
+net:
+  id: netConfig
+  protocol-location: protocol.xml
+  code-languages: 0
+  fold-protocol: true

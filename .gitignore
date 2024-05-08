@@ -44,7 +44,6 @@ package-lock.json
 # Ignore files compiled by npm
 **/dist/
 # Ignore files deployed in webapp
-**/resources/static/
 **/resources/templates/index.html
 
 # test file

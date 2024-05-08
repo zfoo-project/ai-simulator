@@ -1,0 +1,13 @@
+{
+    "name": "zfoo",
+    "version": "1.0.0",
+    "description": "造福",
+    "author": "jaysunxiao@gmail.com",
+    "license": "MIT",
+    "dependencies": {
+        "clipboardy": "^4.0.0",
+        "puppeteer": "22.6.5",
+        "puppeteer-extra": "^3.3.6",
+        "puppeteer-extra-plugin-stealth": "^2.11.2"
+    }
+}

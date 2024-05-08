@@ -2,6 +2,13 @@ logging:
   pattern:
     console: '%d{yyyy-MM-dd HH:mm:ss} [%clr(%5level)] [%thread] %clr(%logger{20}.%M){cyan}\(%F:%line\) - %msg%n'
 
+# 根路径配置
+server:
+  address: 0.0.0.0
+  port: 80
+  servlet:
+    context-path: /
+
 simulator:
   port: 17313
   nodePath: C:/Program Files/nodejs/node.exe

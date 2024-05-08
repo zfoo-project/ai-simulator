@@ -4,6 +4,13 @@ logging:
   file:
     path: ./
 
+# 根路径配置
+server:
+  address: 0.0.0.0
+  port: 80
+  servlet:
+    context-path: /
+
 jiucai:
   broker:
     port: 17313

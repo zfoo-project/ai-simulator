@@ -1,0 +1,1 @@
+- 存放nodejs，java，chrome二进制可执行文件的路径

@@ -21,6 +21,7 @@ import com.zfoo.net.core.HostAndPort;
 import com.zfoo.net.core.websocket.WebsocketServer;
 import com.zfoo.protocol.collection.CollectionUtils;
 import com.zfoo.protocol.collection.concurrent.ConcurrentHashSet;
+import com.zfoo.protocol.util.FileUtils;
 import com.zfoo.protocol.util.StringUtils;
 import com.zfoo.scheduler.manager.SchedulerBus;
 import com.zfoo.ai.simulator.packet.SimulatorChatAsk;
@@ -60,17 +61,17 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
         var brokerServer = new WebsocketServer(HostAndPort.valueOf("0.0.0.0", port));
         brokerServer.start();
 
-        // 启动ai 模拟器
-        var simulators = new ArrayList<String>();
-        if (CollectionUtils.isNotEmpty(simulatorConfig.getSimulators())) {
-            simulators.addAll(simulatorConfig.getSimulators());
-        }
+        // 优先使用外部的配置文件
         var configFile = new File("config.yaml");
         if (configFile.exists()) {
             var yaml = new Yaml();
+            var customConfig = yaml.loadAs(FileUtils.readFileToString(configFile), SimulatorConfig.class);
+            simulatorConfig.setSimulators(customConfig.getSimulators());
+            simulatorConfig.setHeadless(customConfig.isHeadless());
         }
 
-        for (var simulator : simulators) {
+        // 启动ai 模拟器
+        for (var simulator : simulatorConfig.getSimulators()) {
             createSimulator(simulator);
         }
     }

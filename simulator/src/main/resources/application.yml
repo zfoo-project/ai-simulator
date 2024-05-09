@@ -16,11 +16,11 @@ simulator:
   workingPath: D:\Project\ai-simulator
   headless: false
   simulators:
-    - alibaba
-    - baidu
-    - tencent
-    - openai
-    - google
+#    - alibaba
+#    - baidu
+#    - tencent
+#    - openai
+#    - google
 
 
 net:

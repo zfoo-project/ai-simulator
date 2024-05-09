@@ -1,0 +1,7 @@
+headless: false
+simulators:
+  - alibaba
+  - baidu
+  - tencent
+  - openai
+  - google

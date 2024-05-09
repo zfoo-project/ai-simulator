@@ -1,8 +1,11 @@
 import clipboardy from 'clipboardy';
+import TurndownService from 'turndown';
 import {asyncAsk} from './websocket.mjs';
 import ClipboardLockAsk from "./zfooes/packet/ClipboardLockAsk.mjs";
 import ClipboardUnlockAsk from "./zfooes/packet/ClipboardUnlockAsk.mjs";
 
+
+// ---------------------------------------------------------------------------------------------------------------------
 let oldClipboard = "";
 
 export async function copyBefore() {
@@ -21,4 +24,14 @@ export async function copyAfter() {
     }
     const unlockAnswer = await asyncAsk(new ClipboardUnlockAsk());
     return clipboard;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+const turndownService = new TurndownService({
+    preformattedCode: true
+});
+
+export function htmlToMarkdown(html) {
+    const markdown = turndownService.turndown(html);
+    return markdown;
 }

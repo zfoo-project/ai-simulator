@@ -135,7 +135,6 @@ export function send(packet, attachment) {
             ProtocolManager.write(buffer, packet);
             if (attachment == null) {
                 buffer.writeBoolean(false);
-                console.log(new Date(), "Websocket send request --> ", packet)
             } else {
                 buffer.writeBoolean(true);
                 ProtocolManager.write(buffer, attachment)

@@ -4,7 +4,7 @@ import {startWebsocketClient, registerPacketReceiver, send, delay} from './webso
 import SimulatorStatusAsk from "./zfooes/packet/SimulatorStatusAsk.mjs";
 import SimulatorChatAsk from "./zfooes/packet/SimulatorChatAsk.mjs";
 import SimulatorChatAnswer from "./zfooes/packet/SimulatorChatAnswer.mjs";
-import {copyBefore, copyAfter} from './simulator.mjs';
+import {copyBefore, copyAfter, htmlToMarkdown} from './simulator.mjs';
 
 const simulator = 1;
 const simulatorName = 'openai';
@@ -113,20 +113,22 @@ const updateQuestion = async () => {
         return;
     }
 
-    var lastElement = answers[0];
-    const text = await lastElement?.evaluate(el => el.textContent);
-    if (text === lastGenerateText) {
+    const lastElement = answers[0];
+    const html = await lastElement?.evaluate(el => el.innerHTML);
+    if (html === lastGenerateText) {
         return;
     }
-    lastGenerateText = text;
+    lastGenerateText = html;
     generateTime = new Date().getTime();
 
-    const html = await lastElement?.evaluate(el => el.outerHTML);
+    const markdown = htmlToMarkdown(html);
     const chatAnswer = new SimulatorChatAnswer();
     chatAnswer.requestId = currentQuestion.requestId;
     chatAnswer.simulator = simulator;
-    chatAnswer.html = html;
+    chatAnswer.markdown = markdown;
     send(chatAnswer);
+    console.log("html to markdown-----------------------------------------------------------------------------------------------");
+    console.log(markdown);
 }
 
 const completeQuestion = async () => {

@@ -4,7 +4,7 @@ import {startWebsocketClient, registerPacketReceiver, send, delay} from './webso
 import SimulatorStatusAsk from "./zfooes/packet/SimulatorStatusAsk.mjs";
 import SimulatorChatAsk from "./zfooes/packet/SimulatorChatAsk.mjs";
 import SimulatorChatAnswer from "./zfooes/packet/SimulatorChatAnswer.mjs";
-import {copyBefore, copyAfter} from './simulator.mjs';
+import {copyBefore, copyAfter, htmlToMarkdown} from './simulator.mjs';
 
 const simulator = 400;
 const simulatorName = 'alibaba';
@@ -51,7 +51,6 @@ await page.setViewport({
     deviceScaleFactor: 1
 });
 await page.goto(url, {waitUntil: 'networkidle0'});
-await page.addScriptTag({url: 'https://cdnjs.loli.net/ajax/libs/turndown/7.1.3/turndown.js'});
 
 // ---------------------------------------------------------------------------------------------------------------------
 const checkLoginStatues = async () => {
@@ -114,25 +113,20 @@ const updateQuestion = async () => {
         return;
     }
 
-    var lastElement = answers[answers.length - 1];
-    const text = await lastElement?.evaluate(el => el.textContent);
-    if (text === lastGenerateText) {
+    const lastElement = answers[answers.length - 1];
+    const html = await lastElement?.evaluate(el => el.innerHTML);
+    if (html === lastGenerateText) {
         return;
     }
-    lastGenerateText = text;
+    lastGenerateText = html;
     generateTime = new Date().getTime();
 
-    const markdown = await lastElement?.evaluate(el => {
-        var turndownService = new TurndownService()
-        var md = turndownService.turndown(el);
-        return md;
-    });
+    const markdown = htmlToMarkdown(html);
     const chatAnswer = new SimulatorChatAnswer();
     chatAnswer.requestId = currentQuestion.requestId;
     chatAnswer.simulator = simulator;
     chatAnswer.markdown = markdown;
     send(chatAnswer);
-
     console.log("html to markdown-----------------------------------------------------------------------------------------------");
     console.log(markdown);
 }

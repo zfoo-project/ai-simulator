@@ -8,7 +8,7 @@ import {copyBefore, copyAfter, htmlToMarkdown} from './simulator.mjs';
 
 const simulator = 1;
 const simulatorName = 'openai';
-const url = 'https://chat.openai.com/';
+const url = 'https://chatgpt.com';
 
 // status
 let login = false;
@@ -143,7 +143,7 @@ const completeQuestion = async () => {
     if (now - generateTime < 7 * 1000) {
         return;
     }
-    const copyEles = await page.$$('.icon-md');
+    const copyEles = await page.$$('.icon-md-heavy');
     const length = copyEles.length;
     if (length === 0) {
         return;

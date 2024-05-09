@@ -11,9 +11,9 @@ server:
 
 simulator:
   port: 17313
-  nodePath: ./bin/nodejs/node.exe
-  chromePath: ./bin/puppeteer/chrome/win64-123.0.6312.122/chrome-win64/chrome.exe
-  workingPath: .
+  nodePath: C:/Program Files/nodejs/node.exe
+  chromePath: D:\Project\puppeteer-start\puppeteer\chrome\win64-123.0.6312.122\chrome-win64\chrome.exe
+  workingPath: D:\Project\ai-simulator
   headless: false
   simulators:
 #    - alibaba

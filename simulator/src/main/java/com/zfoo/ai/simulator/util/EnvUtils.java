@@ -13,7 +13,7 @@ public abstract class EnvUtils {
 
     public static String env() {
         var profile = System.getProperty("spring.profiles.active");
-        return StringUtils.isEmpty(profile) ? "dev": profile;
+        return StringUtils.trim(profile);
     }
 
 }

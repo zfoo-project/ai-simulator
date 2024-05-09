@@ -1,6 +1,6 @@
 # ai-simulator
 
-本地免费运行的AI模拟器，目前支持以下AI
+本地运行的免费AI模拟器，目前支持以下AI
 
 - OpenAI
 - Google Gemini

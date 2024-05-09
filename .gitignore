@@ -1,5 +1,6 @@
 **/userData/
 **/puppeteer/
+**/bin/
 
 # Compiled class file
 *.class

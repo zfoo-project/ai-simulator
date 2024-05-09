@@ -60,13 +60,13 @@ await page.goto(url, {waitUntil: 'networkidle0'});
 
 // ---------------------------------------------------------------------------------------------------------------------
 const checkLoginStatues = async () => {
-    const loginButton = await page.$('.gb_Ld');
+    const loginButton = await page.$('.gb_Kd');
     if (loginButton == null) {
         login = true;
         return;
     }
     const ask = new SimulatorStatusAsk();
-    ask.message = `${simulatorName} - ${simulator} 没有登录，请您在浏览器登录，如果不希望使用这个ai请在config.json中移除配置`;
+    ask.message = `${simulatorName} - ${simulator} 没有登录，请您在浏览器登录，如果不希望使用这个ai请在config.yaml中移除配置`;
     send(ask);
     login = false;
 }

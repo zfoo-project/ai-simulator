@@ -51,6 +51,7 @@ await page.setViewport({
     deviceScaleFactor: 1
 });
 await page.goto(url, {waitUntil: 'networkidle0'});
+await page.addScriptTag({url: 'https://cdnjs.loli.net/ajax/libs/turndown/7.1.3/turndown.js'});
 
 // ---------------------------------------------------------------------------------------------------------------------
 const checkLoginStatues = async () => {
@@ -121,17 +122,19 @@ const updateQuestion = async () => {
     lastGenerateText = text;
     generateTime = new Date().getTime();
 
-    const html = await lastElement?.evaluate(el => el.outerHTML);
+    const markdown = await lastElement?.evaluate(el => {
+        var turndownService = new TurndownService()
+        var md = turndownService.turndown(el);
+        return md;
+    });
     const chatAnswer = new SimulatorChatAnswer();
     chatAnswer.requestId = currentQuestion.requestId;
     chatAnswer.simulator = simulator;
-    chatAnswer.html = html;
+    chatAnswer.markdown = markdown;
     send(chatAnswer);
 
-    console.log("1-text-----------------------------------------------------------------------------------------------------------");
-    console.log(text);
-    console.log("2-html-----------------------------------------------------------------------------------------------------------");
-    console.log(html);
+    console.log("html to markdown-----------------------------------------------------------------------------------------------");
+    console.log(markdown);
 }
 
 const completeQuestion = async () => {

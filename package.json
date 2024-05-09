@@ -8,6 +8,7 @@
         "clipboardy": "^4.0.0",
         "puppeteer": "22.6.5",
         "puppeteer-extra": "^3.3.6",
-        "puppeteer-extra-plugin-stealth": "^2.11.2"
+        "puppeteer-extra-plugin-stealth": "^2.11.2",
+        "turndown": "^7.1.3"
     }
 }

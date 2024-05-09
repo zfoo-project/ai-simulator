@@ -16,7 +16,6 @@ import com.zfoo.ai.simulator.model.ChatAIEnum;
 import com.zfoo.ai.simulator.packet.SimulatorChatAnswer;
 import com.zfoo.ai.simulator.service.ChatBotService;
 import com.zfoo.ai.simulator.service.SimulatorService;
-import com.zfoo.ai.simulator.util.MarkdownUtils;
 import com.zfoo.event.anno.EventReceiver;
 import com.zfoo.net.NetContext;
 import com.zfoo.net.anno.PacketReceiver;
@@ -66,21 +65,13 @@ public class SimulatorController {
     public void atSimulatorChatAnswer(Session session, SimulatorChatAnswer answer) {
         var requestId = answer.getRequestId();
         var simulator = answer.getSimulator();
-        var html = answer.getHtml();
         var markdown = answer.getMarkdown();
         var aiEnum = ChatAIEnum.typeOf(simulator);
         var simulatorName = aiEnum == null ? "" : aiEnum.getName();
         // 只打印最后一句话
-        if (StringUtils.isNotEmpty(markdown)) {
-            var logMarkdown = substringAfterLastRegex(markdown, "[，,\\s]+");
-            log.info("atSimulatorChatAnswer requestId:[{}] simulator:[{}] markdown:[{}]", requestId, simulatorName, logMarkdown);
-            chatBotService.sendToChatBot(requestId, simulator, markdown);
-        } else {
-            var md = MarkdownUtils.html2Md(html);
-            var logHtml = substringAfterLastRegex(md, "[，,\\s]+");
-            log.info("atSimulatorChatAnswer requestId:[{}] simulator:[{}] html:[{}]", requestId, simulatorName, logHtml);
-            chatBotService.sendToChatBot(requestId, simulator, md);
-        }
+        var logMarkdown = substringAfterLastRegex(markdown, "[，,\\s]+");
+        log.info("atSimulatorChatAnswer requestId:[{}] simulator:[{}] markdown:[{}]", requestId, simulatorName, logMarkdown);
+        chatBotService.sendToChatBot(requestId, simulator, markdown);
     }
 
     public static String substringAfterLastRegex(final String str, final String regex) {

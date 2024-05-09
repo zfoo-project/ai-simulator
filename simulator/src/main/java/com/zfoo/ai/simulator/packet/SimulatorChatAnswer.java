@@ -16,8 +16,6 @@ public class SimulatorChatAnswer {
 
     private int simulator;
 
-    private String html;
-
     private String markdown;
 
 }

@@ -14,6 +14,7 @@ package com.zfoo.ai.simulator.service;
 
 import com.zfoo.ai.simulator.config.SimulatorConfig;
 import com.zfoo.ai.simulator.model.ChatAIEnum;
+import com.zfoo.ai.simulator.util.EnvUtils;
 import com.zfoo.event.model.AppStartEvent;
 import com.zfoo.monitor.util.OSUtils;
 import com.zfoo.net.NetContext;
@@ -61,13 +62,15 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
         var brokerServer = new WebsocketServer(HostAndPort.valueOf("0.0.0.0", port));
         brokerServer.start();
 
-        // 优先使用外部的配置文件
-        var configFile = new File("config.yaml");
-        if (configFile.exists()) {
-            var yaml = new Yaml();
-            var customConfig = yaml.loadAs(FileUtils.readFileToString(configFile), SimulatorConfig.class);
-            simulatorConfig.setSimulators(customConfig.getSimulators());
-            simulatorConfig.setHeadless(customConfig.isHeadless());
+        // 非开发环境，优先使用外部的配置文件
+        if (!EnvUtils.isDevelopment()) {
+            var configFile = new File("config.yaml");
+            if (configFile.exists()) {
+                var yaml = new Yaml();
+                var customConfig = yaml.loadAs(FileUtils.readFileToString(configFile), SimulatorConfig.class);
+                simulatorConfig.setSimulators(customConfig.getSimulators());
+                simulatorConfig.setHeadless(customConfig.isHeadless());
+            }
         }
 
         // 启动ai 模拟器

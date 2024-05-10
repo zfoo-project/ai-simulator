@@ -12,7 +12,6 @@
 
 package com.zfoo.ai.simulator.controller;
 
-import com.zfoo.ai.simulator.model.ChatAIEnum;
 import com.zfoo.ai.simulator.packet.ClipboardUnlockAnswer;
 import com.zfoo.ai.simulator.service.SimulatorService;
 import com.zfoo.net.NetContext;
@@ -44,7 +43,7 @@ public class ClipboardController {
 
     private AtomicBoolean lock = new AtomicBoolean(false);
     private volatile long lockTime;
-    private ChatAIEnum simulator;
+    private String simulator;
 
     @Scheduler(cron = "0/1 * * * * ?")
     public void cronUnlock() {

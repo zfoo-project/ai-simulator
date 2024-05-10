@@ -12,7 +12,6 @@
 
 package com.zfoo.ai.simulator.controller;
 
-import com.zfoo.ai.simulator.model.ChatAIEnum;
 import com.zfoo.ai.simulator.packet.SimulatorChatAnswer;
 import com.zfoo.ai.simulator.service.ChatBotService;
 import com.zfoo.ai.simulator.service.SimulatorService;
@@ -53,8 +52,7 @@ public class SimulatorController {
     public void atSimulatorRegisterAsk(Session session, SimulatorRegisterAsk ask) {
         var sid = session.getSid();
         var simulator = ask.getSimulator();
-        var aiEnum = ChatAIEnum.typeOf(simulator);
-        log.info("atSimulatorRegisterAsk simulator:[{}] type:[{}] 注册成功 [sid:{}]", aiEnum.getName(), aiEnum.getType(), session.getSid());
+        log.info("atSimulatorRegisterAsk simulator:[{}] 注册成功 [sid:{}]", simulator, session.getSid());
 
         var simulatorSessionIds = simulatorService.simulatorSessionMap.computeIfAbsent(simulator, it -> new ConcurrentHashSet<>());
         simulatorSessionIds.add(sid);
@@ -66,11 +64,9 @@ public class SimulatorController {
         var requestId = answer.getRequestId();
         var simulator = answer.getSimulator();
         var markdown = answer.getMarkdown();
-        var aiEnum = ChatAIEnum.typeOf(simulator);
-        var simulatorName = aiEnum == null ? "" : aiEnum.getName();
         // 只打印最后一句话
         var logMarkdown = substringAfterLastRegex(markdown, "[，,\\s]+");
-        log.info("atSimulatorChatAnswer requestId:[{}] simulator:[{}] markdown:[{}]", requestId, simulatorName, logMarkdown);
+        log.info("atSimulatorChatAnswer requestId:[{}] simulator:[{}] markdown:[{}]", requestId, simulator, logMarkdown);
         chatBotService.sendToChatBot(requestId, simulator, markdown);
     }
 

@@ -15,6 +15,6 @@ public class SimulatorRegisterAsk {
     /**
      * 14，百度
      */
-    private int simulator;
+    private String simulator;
 
 }

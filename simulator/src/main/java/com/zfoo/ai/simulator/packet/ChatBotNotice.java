@@ -14,8 +14,7 @@ public class ChatBotNotice {
 
     private long requestId;
 
-    // ChatAIEnum
-    private int simulator;
+    private String simulator;
 
     private String choice;
 

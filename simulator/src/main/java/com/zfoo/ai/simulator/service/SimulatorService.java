@@ -13,11 +13,9 @@
 package com.zfoo.ai.simulator.service;
 
 import com.zfoo.ai.simulator.config.SimulatorConfig;
-import com.zfoo.ai.simulator.model.ChatAIEnum;
 import com.zfoo.ai.simulator.util.CommandUtils;
 import com.zfoo.ai.simulator.util.EnvUtils;
 import com.zfoo.event.model.AppStartEvent;
-import com.zfoo.monitor.util.OSUtils;
 import com.zfoo.net.NetContext;
 import com.zfoo.net.core.HostAndPort;
 import com.zfoo.net.core.websocket.WebsocketServer;
@@ -51,7 +49,7 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
 
 
     // key:simulatorType -> value:sessions
-    public ConcurrentHashMap<Integer, ConcurrentHashSet<Long>> simulatorSessionMap = new ConcurrentHashMap<>();
+    public ConcurrentHashMap<String, ConcurrentHashSet<Long>> simulatorSessionMap = new ConcurrentHashMap<>();
 
     @Autowired
     private ChatBotService chatBotService;
@@ -112,13 +110,13 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
         }
     }
 
-    public ChatAIEnum simulator(long sidOfSimulator) {
+    public String simulator(long sidOfSimulator) {
         for (var entry : simulatorSessionMap.entrySet()) {
             var simulator = entry.getKey();
             var sessionIds= entry.getValue();
             for (var sid : sessionIds) {
                 if (sid == sidOfSimulator) {
-                    return ChatAIEnum.typeOf(simulator);
+                    return simulator;
                 }
             }
         }

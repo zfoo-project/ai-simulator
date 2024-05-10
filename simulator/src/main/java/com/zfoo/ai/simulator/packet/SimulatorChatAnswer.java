@@ -14,7 +14,7 @@ public class SimulatorChatAnswer {
 
     private long requestId;
 
-    private int simulator;
+    private String simulator;
 
     private String markdown;
 

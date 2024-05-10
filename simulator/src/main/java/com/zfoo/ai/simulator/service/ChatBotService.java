@@ -28,7 +28,7 @@ public class ChatBotService {
 
     public ConcurrentHashSet<Long> chatBotSessions = new ConcurrentHashSet<>();
 
-    public void sendToChatBot(long requestId, int simulator, String message) {
+    public void sendToChatBot(long requestId, String simulator, String message) {
         var simulatorRequestId = Long.parseLong(StringUtils.format("{}{}", simulator, requestId));
         var notice = new ChatBotNotice(simulatorRequestId, simulator, message);
         for (var sid : chatBotSessions) {

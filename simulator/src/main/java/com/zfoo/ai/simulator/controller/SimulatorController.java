@@ -13,6 +13,9 @@
 package com.zfoo.ai.simulator.controller;
 
 import com.zfoo.ai.simulator.packet.SimulatorChatAnswer;
+import com.zfoo.ai.simulator.packet.SimulatorRegisterAnswer;
+import com.zfoo.ai.simulator.packet.SimulatorRegisterAsk;
+import com.zfoo.ai.simulator.packet.SimulatorStatusAsk;
 import com.zfoo.ai.simulator.service.ChatBotService;
 import com.zfoo.ai.simulator.service.SimulatorService;
 import com.zfoo.event.anno.EventReceiver;
@@ -23,10 +26,8 @@ import com.zfoo.net.core.event.ServerSessionInactiveEvent;
 import com.zfoo.net.session.Session;
 import com.zfoo.protocol.collection.ArrayUtils;
 import com.zfoo.protocol.collection.concurrent.ConcurrentHashSet;
+import com.zfoo.protocol.util.RandomUtils;
 import com.zfoo.protocol.util.StringUtils;
-import com.zfoo.ai.simulator.packet.SimulatorRegisterAnswer;
-import com.zfoo.ai.simulator.packet.SimulatorRegisterAsk;
-import com.zfoo.ai.simulator.packet.SimulatorStatusAsk;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -45,7 +46,12 @@ public class SimulatorController {
 
     @PacketReceiver(Task.NettyIO)
     public void atSimulatorStatusAsk(Session session, SimulatorStatusAsk ask) {
-        log.info("atSimulatorStatusAsk sid:[{}] [{}]", session.getSid(), ask.getMessage());
+        var sid = session.getSid();
+        var simulator = simulatorService.simulator(sid);
+        var message = ask.getMessage();
+        log.info("atSimulatorStatusAsk sid:[{}] simulator:[{}] message:[{}]", sid, simulator, message);
+        var requestId = RandomUtils.randomInt(1000, 2000);
+        chatBotService.sendToChatBot(requestId, simulator, message);
     }
 
     @PacketReceiver(Task.NettyIO)

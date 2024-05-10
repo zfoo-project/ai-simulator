@@ -79,9 +79,10 @@ const checkGenerateStatues = async () => {
     if (now - generateTime < 70 * 1000) {
         return;
     }
-    console.error("页面超时，重新加载页面")
-    page.reload();
-    generating = false;
+    const ask = new SimulatorStatusAsk();
+    ask.message = `${simulatorName} - ${simulator} 页面超时，重启浏览器`;
+    send(ask);
+    await browser.close();
 }
 
 const askQuestion = async () => {

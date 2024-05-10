@@ -14,6 +14,7 @@ package com.zfoo.ai.simulator.service;
 
 import com.zfoo.ai.simulator.config.SimulatorConfig;
 import com.zfoo.ai.simulator.model.ChatAIEnum;
+import com.zfoo.ai.simulator.util.CommandUtils;
 import com.zfoo.ai.simulator.util.EnvUtils;
 import com.zfoo.event.model.AppStartEvent;
 import com.zfoo.monitor.util.OSUtils;
@@ -88,7 +89,7 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
             @Override
             public void run() {
                 var command = StringUtils.format("{} {}/{}.mjs {} {}", nodePath, workingPath, simulator, chromePath, headless);
-                OSUtils.execCommand(command, workingPath);
+                CommandUtils.execCommand(command, workingPath);
                 SchedulerBus.schedule(() -> createSimulator(simulator), 5, TimeUnit.SECONDS);
             }
         });

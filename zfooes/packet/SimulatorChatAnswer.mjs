@@ -1,7 +1,7 @@
 
 class SimulatorChatAnswer {
     requestId = 0; // number
-    simulator = 0; // number
+    simulator = ""; // string
     markdown = ""; // string
 
     static PROTOCOL_ID = 1011;
@@ -18,7 +18,7 @@ class SimulatorChatAnswer {
         buffer.writeInt(-1);
         buffer.writeString(packet.markdown);
         buffer.writeLong(packet.requestId);
-        buffer.writeInt(packet.simulator);
+        buffer.writeString(packet.simulator);
     }
 
     static read(buffer) {
@@ -32,7 +32,7 @@ class SimulatorChatAnswer {
         packet.markdown = result0;
         const result1 = buffer.readLong();
         packet.requestId = result1;
-        const result2 = buffer.readInt();
+        const result2 = buffer.readString();
         packet.simulator = result2;
         if (length > 0) {
             buffer.setReadOffset(beforeReadIndex + length);

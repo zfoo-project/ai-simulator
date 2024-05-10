@@ -1,6 +1,6 @@
 
 class SimulatorRegisterAsk {
-    simulator = 0; // number
+    simulator = ""; // string
 
     static PROTOCOL_ID = 1000;
 
@@ -14,7 +14,7 @@ class SimulatorRegisterAsk {
             return;
         }
         buffer.writeInt(-1);
-        buffer.writeInt(packet.simulator);
+        buffer.writeString(packet.simulator);
     }
 
     static read(buffer) {
@@ -24,7 +24,7 @@ class SimulatorRegisterAsk {
         }
         const beforeReadIndex = buffer.getReadOffset();
         const packet = new SimulatorRegisterAsk();
-        const result0 = buffer.readInt();
+        const result0 = buffer.readString();
         packet.simulator = result0;
         if (length > 0) {
             buffer.setReadOffset(beforeReadIndex + length);

@@ -65,7 +65,7 @@ public class ChatBotController {
     @PacketReceiver
     public void atChatBotRegisterRequest(Session session, ChatBotRegisterRequest request) {
         chatBotService.chatBotSessions.add(session.getSid());
-        log.info("atChatBotRegisterRequest chatBot注册成功 [sid:{}]", session.getSid());
+        log.info("atChatBotRegisterRequest chatBot 已连接 [sid:{}]", session.getSid());
         NetContext.getRouter().send(session, new ChatBotRegisterResponse());
     }
 

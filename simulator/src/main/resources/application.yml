@@ -1,6 +1,8 @@
 logging:
   pattern:
-    console: '%d{yyyy-MM-dd HH:mm:ss} [%5level] [%thread] %-28logger{20} : %msg%n'
+    file: '%d{yyyy-MM-dd HH:mm:ss} [%5level] [%thread] %-28logger{20} : %msg%n'
+  file:
+    path: ./
 
 # 根路径配置
 server:
@@ -12,7 +14,7 @@ server:
 simulator:
   port: 17313
   nodePath: ./bin/nodejs/node.exe
-  chromePath: ./bin/chrome-win64/chrome.exe
+  chromePath: ./bin/chrome/chrome.exe
   workingPath: .
   headless: false
   simulators:

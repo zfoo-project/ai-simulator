@@ -12,7 +12,7 @@ server:
 simulator:
   port: 17313
   nodePath: ./bin/nodejs/node.exe
-  chromePath: ./bin/puppeteer/chrome/win64-123.0.6312.122/chrome-win64/chrome.exe
+  chromePath: ./bin/chrome-win64/chrome.exe
   workingPath: .
   headless: false
   simulators:

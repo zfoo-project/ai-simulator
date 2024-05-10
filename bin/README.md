@@ -1,6 +1,6 @@
 - 存放二进制可执行文件的路径
     - nodejs
-    - chrome
+    - chrome-win64
     - openjdk
 
 - chcp 65001

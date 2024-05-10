@@ -11,7 +11,11 @@ let oldClipboard = "";
 
 export async function copyBefore() {
     const lockAnswer = await asyncAsk(new ClipboardLockAsk());
-    oldClipboard = clipboardy.readSync();
+    try {
+        oldClipboard = clipboardy.readSync();
+    } catch (e) {
+        oldClipboard = "";
+    }
 }
 
 // 一直复制，直到剪贴板内容变化

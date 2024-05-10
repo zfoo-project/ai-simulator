@@ -12,13 +12,15 @@
 
 package com.zfoo.ai.simulator.service;
 
+import com.zfoo.ai.simulator.packet.ChatBotNotice;
 import com.zfoo.net.NetContext;
 import com.zfoo.net.util.HashUtils;
 import com.zfoo.protocol.collection.concurrent.ConcurrentHashSet;
 import com.zfoo.protocol.util.StringUtils;
-import com.zfoo.ai.simulator.packet.ChatBotNotice;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author godotg
@@ -29,12 +31,18 @@ public class ChatBotService {
 
     public ConcurrentHashSet<Long> chatBotSessions = new ConcurrentHashSet<>();
 
+    private AtomicLong atomicRequestId = new AtomicLong(3000);
+    public void sendToChatBot(String simulator, String message) {
+        var requestId = atomicRequestId.incrementAndGet();
+        sendToChatBot(requestId, simulator, message);
+    }
+
     public void sendToChatBot(long requestId, String simulator, String message) {
         var simulatorRequestId = Long.parseLong(StringUtils.format("{}{}", HashUtils.fnvHash(simulator), requestId));
         var notice = new ChatBotNotice(simulatorRequestId, simulator, message);
         for (var sid : chatBotSessions) {
             var session = NetContext.getSessionManager().getServerSession(sid);
-            NetContext.getRouter().send(session, notice);
+            NetContext.getRouter().send(session, notice, null);
         }
     }
 

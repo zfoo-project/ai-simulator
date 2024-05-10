@@ -50,8 +50,7 @@ public class SimulatorController {
         var simulator = simulatorService.simulator(sid);
         var message = ask.getMessage();
         log.info("atSimulatorStatusAsk sid:[{}] simulator:[{}] message:[{}]", sid, simulator, message);
-        var requestId = RandomUtils.randomInt(1000, 2000);
-        chatBotService.sendToChatBot(requestId, simulator, message);
+        chatBotService.sendToChatBot(simulator, message);
     }
 
     @PacketReceiver(Task.NettyIO)
@@ -63,6 +62,7 @@ public class SimulatorController {
         var simulatorSessionIds = simulatorService.simulatorSessionMap.computeIfAbsent(simulator, it -> new ConcurrentHashSet<>());
         simulatorSessionIds.add(sid);
         NetContext.getRouter().send(session, new SimulatorRegisterAnswer());
+        chatBotService.sendToChatBot(simulator, StringUtils.format("模拟器 {} 注册成功", simulator));
     }
 
     @PacketReceiver

@@ -60,6 +60,10 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
         var brokerServer = new WebsocketServer(HostAndPort.valueOf("0.0.0.0", port));
         brokerServer.start();
 
+        // 打开默认地址
+        // start chrome.exe https://www.baidu.com
+        CommandUtils.execCommand("cmd /c start http://localhost:17333");
+
         // 非开发环境，优先使用外部的配置文件
         if (!EnvUtils.isDevelopment()) {
             var configFile = new File("config.yaml");

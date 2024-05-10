@@ -13,6 +13,7 @@
 package com.zfoo.ai.simulator.service;
 
 import com.zfoo.net.NetContext;
+import com.zfoo.net.util.HashUtils;
 import com.zfoo.protocol.collection.concurrent.ConcurrentHashSet;
 import com.zfoo.protocol.util.StringUtils;
 import com.zfoo.ai.simulator.packet.ChatBotNotice;
@@ -29,7 +30,7 @@ public class ChatBotService {
     public ConcurrentHashSet<Long> chatBotSessions = new ConcurrentHashSet<>();
 
     public void sendToChatBot(long requestId, String simulator, String message) {
-        var simulatorRequestId = Long.parseLong(StringUtils.format("{}{}", simulator, requestId));
+        var simulatorRequestId = Long.parseLong(StringUtils.format("{}{}", HashUtils.fnvHash(simulator), requestId));
         var notice = new ChatBotNotice(simulatorRequestId, simulator, message);
         for (var sid : chatBotSessions) {
             var session = NetContext.getSessionManager().getServerSession(sid);

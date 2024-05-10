@@ -1,4 +1,4 @@
-import{ap as B,a6 as J}from"./index-bd0fd65c.js";var M={exports:{}};/*!
+import{ap as B,a6 as J}from"./index-c829ebe7.js";var M={exports:{}};/*!
  * clipboard.js v2.0.11
  * https://clipboardjs.com/
  *

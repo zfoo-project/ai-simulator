@@ -58,7 +58,7 @@ public class SimulatorController {
     public void atSimulatorRegisterAsk(Session session, SimulatorRegisterAsk ask) {
         var sid = session.getSid();
         var simulator = ask.getSimulator();
-        log.info("atSimulatorRegisterAsk simulator:[{}] 注册成功 [sid:{}]", simulator, session.getSid());
+        log.info("atSimulatorRegisterAsk [sid:{}] simulator:[{}] 注册成功", sid, simulator);
 
         var simulatorSessionIds = simulatorService.simulatorSessionMap.computeIfAbsent(simulator, it -> new ConcurrentHashSet<>());
         simulatorSessionIds.add(sid);

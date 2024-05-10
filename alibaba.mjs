@@ -6,8 +6,7 @@ import SimulatorChatAsk from "./zfooes/packet/SimulatorChatAsk.mjs";
 import SimulatorChatAnswer from "./zfooes/packet/SimulatorChatAnswer.mjs";
 import {copyBefore, copyAfter, htmlToMarkdown} from './simulator.mjs';
 
-const simulator = 400;
-const simulatorName = 'alibaba';
+const simulator = 'alibaba';
 const url = 'https://tongyi.aliyun.com/qianwen';
 
 // status
@@ -29,7 +28,7 @@ if (process.argv.length >= 4) {
     chromePath = process.argv[2];
     headless = process.argv[3] === "true";
 }
-console.log(`${simulator} simulator:[${simulatorName}] chromePath:[${chromePath}] headless:[${headless}]`);
+console.log(`simulator:[${simulator}] chromePath:[${chromePath}] headless:[${headless}]`);
 // ---------------------------------------------------------------------------------------------------------------------
 // C:\Users\Administrator\.cache\puppeteer
 // open browser
@@ -39,7 +38,7 @@ const browser = await puppeteer.launch(
     {
         headless: headless,
         executablePath: chromePath,
-        userDataDir: './userData/' + simulatorName
+        userDataDir: './userData/' + simulator
     }
 );
 const context = browser.defaultBrowserContext();
@@ -60,7 +59,7 @@ const checkLoginStatues = async () => {
         return;
     }
     const ask = new SimulatorStatusAsk();
-    ask.message = `${simulatorName} - ${simulator} 没有登录，请您在浏览器登录，如果不希望使用这个ai请在config.yaml中移除配置`;
+    ask.message = `${simulator} 没有登录，请您在浏览器登录，如果不希望使用这个ai请在config.yaml中移除配置`;
     send(ask);
     login = false;
 }
@@ -81,7 +80,7 @@ const checkGenerateStatues = async () => {
         return;
     }
     const ask = new SimulatorStatusAsk();
-    ask.message = `${simulatorName} - ${simulator} 页面超时，重启浏览器`;
+    ask.message = `${simulator} 页面超时，重启浏览器`;
     send(ask);
     await browser.close();
 }

@@ -13,6 +13,7 @@
 package com.zfoo.ai.simulator.service;
 
 import com.zfoo.ai.simulator.config.SimulatorConfig;
+import com.zfoo.ai.simulator.packet.SimulatorChatAsk;
 import com.zfoo.ai.simulator.util.CommandUtils;
 import com.zfoo.ai.simulator.util.EnvUtils;
 import com.zfoo.event.model.AppStartEvent;
@@ -24,7 +25,6 @@ import com.zfoo.protocol.collection.concurrent.ConcurrentHashSet;
 import com.zfoo.protocol.util.FileUtils;
 import com.zfoo.protocol.util.StringUtils;
 import com.zfoo.scheduler.manager.SchedulerBus;
-import com.zfoo.ai.simulator.packet.SimulatorChatAsk;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,6 @@ import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 

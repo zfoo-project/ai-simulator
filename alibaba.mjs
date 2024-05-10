@@ -175,14 +175,21 @@ const tick = async () => {
 registerPacketReceiver(SimulatorChatAsk.PROTOCOL_ID, atSimulatorChatAsk);
 startWebsocketClient(simulator);
 
-let updateFlag = true;
 setInterval(async () => {
     await checkGenerateStatues();
     try {
-        if (updateFlag) {
-            updateFlag = false;
             await checkLoginStatues();
             await tick();
+    } catch (e) {
+        console.error(e);
+    }
+}, 3000);
+
+let updateFlag = true;
+setInterval(async () => {
+    try {
+        if (updateFlag) {
+            updateFlag = false;
             await askQuestion();
             await updateQuestion();
             await completeQuestion();

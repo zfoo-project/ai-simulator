@@ -63,14 +63,20 @@ public class ClipboardController {
     @PacketReceiver(Task.EventBus)
     public void atClipboardLockAsk(Session session, ClipboardLockAsk ask) {
         var sid = session.getSid();
-        var simulator = simulatorService.simulator(sid);
-        log.info("atClipboardLockAsk sid:[{}] simulator:[{}]", sid, simulator);
+        var simulatorOfSid = simulatorService.simulator(sid);
+        log.info("atClipboardLockAsk sid:[{}] simulator:[{}]", sid, simulatorOfSid);
+
+        if (simulatorOfSid.equals(simulator)) {
+            lockTime = TimeUtils.now();
+            NetContext.getRouter().send(session, new ClipboardLockAnswer());
+            return;
+        }
 
         while (lock.compareAndSet(false, true)) {
             ThreadUtils.sleep(300);
         }
         lockTime = TimeUtils.now();
-        this.simulator = simulator;
+        this.simulator = simulatorOfSid;
 
         NetContext.getRouter().send(session, new ClipboardLockAnswer());
     }

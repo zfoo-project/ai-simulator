@@ -40,7 +40,7 @@ export function htmlToMarkdown(html) {
 // ---------------------------------------------------------------------------------------------------------------------
 export function sendNotLoginStatus(simulator) {
     const ask = new SimulatorStatusAsk();
-    ask.message = `${simulator} 没有登录，请您在AI模拟器打开的浏览器中登录，或者如果想使用这个ai在config.yaml中移除改配置`;
+    ask.message = `${simulator} 没有登录，请您在AI模拟器打开的浏览器中登录，或者如果不想使用这个ai请在config.yaml中移除改配置`;
     send(ask);
 }
 

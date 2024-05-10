@@ -82,6 +82,7 @@ const checkGenerateStatues = async () => {
     ask.message = `${simulator} 页面超时，重启浏览器`;
     send(ask);
     await browser.close();
+    throw new Error(ask.message);
 }
 
 const askQuestion = async () => {
@@ -175,11 +176,11 @@ startWebsocketClient(simulator);
 
 let updateFlag = true;
 setInterval(async () => {
+    await checkGenerateStatues();
     try {
         if (updateFlag) {
             updateFlag = false;
             await checkLoginStatues();
-            await checkGenerateStatues();
             await tick();
             await askQuestion();
             await updateQuestion();

@@ -1,10 +1,9 @@
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import {startWebsocketClient, registerPacketReceiver, send, delay} from './websocket.mjs';
-import SimulatorStatusAsk from "./zfooes/packet/SimulatorStatusAsk.mjs";
 import SimulatorChatAsk from "./zfooes/packet/SimulatorChatAsk.mjs";
 import SimulatorChatAnswer from "./zfooes/packet/SimulatorChatAnswer.mjs";
-import {copyBefore, copyAfter, htmlToMarkdown} from './simulator.mjs';
+import {copyBefore, copyAfter, htmlToMarkdown, sendNotLoginStatus, sendRestartStatus} from './simulator.mjs';
 
 const simulator = 'openai';
 const url = 'https://chatgpt.com';
@@ -58,9 +57,7 @@ const checkLoginStatues = async () => {
         login = true;
         return;
     }
-    const ask = new SimulatorStatusAsk();
-    ask.message = `${simulator} 没有登录，请您在浏览器登录，如果不希望使用这个ai请在config.yaml中移除配置`;
-    send(ask);
+    sendNotLoginStatus(simulator);
     login = false;
 }
 
@@ -79,11 +76,8 @@ const checkGenerateStatues = async () => {
     if (now - generateTime < 70 * 1000) {
         return;
     }
-    const ask = new SimulatorStatusAsk();
-    ask.message = `${simulator} 页面超时，重启浏览器`;
-    send(ask);
     await browser.close();
-    throw new Error(ask.message);
+    sendRestartStatus(simulator);
 }
 
 const askQuestion = async () => {

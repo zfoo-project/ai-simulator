@@ -1,8 +1,9 @@
 import clipboardy from 'clipboardy';
 import TurndownService from 'turndown';
-import {asyncAsk} from './websocket.mjs';
+import {send, asyncAsk} from './websocket.mjs';
 import ClipboardLockAsk from "./zfooes/packet/ClipboardLockAsk.mjs";
 import ClipboardUnlockAsk from "./zfooes/packet/ClipboardUnlockAsk.mjs";
+import SimulatorStatusAsk from "./zfooes/packet/SimulatorStatusAsk.mjs";
 
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -34,4 +35,18 @@ const turndownService = new TurndownService({
 export function htmlToMarkdown(html) {
     const markdown = turndownService.turndown(html);
     return markdown;
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+export function sendNotLoginStatus(simulator) {
+    const ask = new SimulatorStatusAsk();
+    ask.message = `${simulator} 没有登录，请您在AI模拟器打开的浏览器中登录，或者如果想使用这个ai在config.yaml中移除改配置`;
+    send(ask);
+}
+
+export function sendRestartStatus(simulator) {
+    const ask = new SimulatorStatusAsk();
+    ask.message = `${simulator} 页面超时，重启浏览器`;
+    send(ask);
+    throw new Error(ask.message);
 }

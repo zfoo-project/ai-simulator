@@ -13,9 +13,11 @@
 package com.zfoo.ai.simulator.service;
 
 import com.zfoo.ai.simulator.config.SimulatorConfig;
+import com.zfoo.ai.simulator.model.VersionConfig;
 import com.zfoo.ai.simulator.packet.SimulatorChatAsk;
 import com.zfoo.ai.simulator.util.CommandUtils;
 import com.zfoo.ai.simulator.util.EnvUtils;
+import com.zfoo.ai.simulator.util.HttpUtils;
 import com.zfoo.event.model.AppStartEvent;
 import com.zfoo.net.NetContext;
 import com.zfoo.net.core.HostAndPort;
@@ -23,6 +25,7 @@ import com.zfoo.net.core.websocket.WebsocketServer;
 import com.zfoo.protocol.collection.CollectionUtils;
 import com.zfoo.protocol.collection.concurrent.ConcurrentHashSet;
 import com.zfoo.protocol.util.FileUtils;
+import com.zfoo.protocol.util.JsonUtils;
 import com.zfoo.protocol.util.StringUtils;
 import com.zfoo.scheduler.manager.SchedulerBus;
 import lombok.SneakyThrows;
@@ -56,14 +59,6 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
     @SneakyThrows
     @Override
     public void onApplicationEvent(AppStartEvent event) {
-        var port = simulatorConfig.getPort();
-        var brokerServer = new WebsocketServer(HostAndPort.valueOf("0.0.0.0", port));
-        brokerServer.start();
-
-        // 打开默认地址
-        // start chrome.exe https://www.baidu.com
-        CommandUtils.execCommand("cmd /c start http://localhost:17333");
-
         // 非开发环境，优先使用外部的配置文件
         if (!EnvUtils.isDevelopment()) {
             var configFile = new File("config.yaml");
@@ -72,13 +67,50 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
                 var customConfig = yaml.loadAs(FileUtils.readFileToString(configFile), SimulatorConfig.class);
                 simulatorConfig.setSimulators(customConfig.getSimulators());
                 simulatorConfig.setHeadless(customConfig.isHeadless());
+                simulatorConfig.setUpdateUrl(customConfig.getUpdateUrl());
             }
         }
+
+        // 更新热更文件
+        updateVersion();
+
+        var port = simulatorConfig.getPort();
+        var brokerServer = new WebsocketServer(HostAndPort.valueOf("0.0.0.0", port));
+        brokerServer.start();
+
+        // 打开默认地址
+        // start chrome.exe https://www.baidu.com
+        CommandUtils.execCommand("cmd /c start http://localhost:17333");
 
         // 启动ai 模拟器
         for (var simulator : simulatorConfig.getSimulators()) {
             createSimulator(simulator);
         }
+    }
+
+    @SneakyThrows
+    private void updateVersion() {
+        var updateUrl = simulatorConfig.getUpdateUrl();
+        if (StringUtils.isBlank(updateUrl)) {
+            return;
+        }
+        log.info("资源地址[{}]，检查配置文件", updateUrl);
+        var remoteVersionJson = HttpUtils.get(StringUtils.format("{}/version.json", updateUrl));
+        var remoteVersionConfig = JsonUtils.string2Object(remoteVersionJson, VersionConfig.class);
+
+        // 本地配置
+        var localVersionFile = new File("version.json");
+        VersionConfig localVersionConfig = new VersionConfig();
+        if (localVersionFile.exists()) {
+            var localVersionConfigJson = FileUtils.readFileToString(localVersionFile);
+            localVersionConfig = JsonUtils.string2Object(localVersionConfigJson, VersionConfig.class);
+        }
+
+        if (remoteVersionConfig.getSimulatorVersion().equals(localVersionConfig.getSimulatorVersion())) {
+            return;
+        }
+
+
     }
 
     public void createSimulator(String simulator) {

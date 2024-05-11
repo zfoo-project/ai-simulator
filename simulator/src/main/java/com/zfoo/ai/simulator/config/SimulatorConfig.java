@@ -22,6 +22,8 @@ public class SimulatorConfig {
 
     private String workingPath;
 
+    private String updateUrl;
+
     private boolean headless;
 
     private List<String> simulators;

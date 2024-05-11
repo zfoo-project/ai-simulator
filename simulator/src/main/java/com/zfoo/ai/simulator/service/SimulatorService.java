@@ -94,8 +94,9 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
         if (StringUtils.isBlank(updateUrl)) {
             return;
         }
-        log.info("资源地址[{}]，检查配置文件", updateUrl);
-        var remoteVersionJson = HttpUtils.get(StringUtils.format("{}/version.json", updateUrl));
+        var remoteVersionUrl = StringUtils.format("{}/version.json", updateUrl);
+        log.info("版本地址[{}]", remoteVersionUrl);
+        var remoteVersionJson = HttpUtils.get(remoteVersionUrl);
         var remoteVersionConfig = JsonUtils.string2Object(remoteVersionJson, VersionConfig.class);
 
         // 本地配置
@@ -110,6 +111,8 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
             return;
         }
 
+        // 下载热更新文件
+        var bytes = HttpUtils.getBytes(remoteVersionConfig.getSimulatorResourceUrl());
 
     }
 

@@ -64,7 +64,6 @@ function connect(desc) {
         const registerAsk = new SimulatorRegisterAsk();
         registerAsk.simulator = simulator;
         const answer = await asyncAsk(registerAsk);
-        console.log("----------------------------------");
         console.log(answer);
     };
 

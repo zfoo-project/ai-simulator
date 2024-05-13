@@ -18,47 +18,55 @@ public class CommandUtils {
 
     public static String execCommand(String command) {
         log.info("execCommand [{}]", command);
-        return doExecCommand(command, (File)null);
+        return doExecCommand(command, null);
     }
+
 
     public static String execCommand(String command, String workingDirectory) {
         log.info("execCommand [{}] workingDirectory:[{}]", command, workingDirectory);
         FileUtils.createDirectory(workingDirectory);
-        File wd = new File(workingDirectory);
+        var wd = new File(workingDirectory);
         return doExecCommand(command, wd);
     }
 
     public static String doExecCommand(String command, File wd) {
         Process process = null;
         InputStream inputStream = null;
-
-        String var8;
         try {
-            String[] commandSplits = command.split("\\s+");
-            process = (new ProcessBuilder(commandSplits)).redirectErrorStream(true).directory(wd).start();
+            var commandSplits = command.split(StringUtils.SPACE_REGEX);
+            process = new ProcessBuilder(commandSplits)
+                    .redirectErrorStream(true)
+                    .directory(wd)
+                    .start();
+
+            //取得命令结果的输出流
             inputStream = process.getInputStream();
-            byte[] bytes = IOUtils.toByteArray(inputStream);
-            String result = StringUtils.bytesToString(bytes);
+            var bytes = IOUtils.toByteArray(inputStream);
+            var result = StringUtils.bytesToString(bytes);
+
+            // 其他线程都等待这个线程完成
             process.waitFor();
+            // 获取javac线程的退出值，0代表正常退出，非0代表异常中止
             int exitValue = process.exitValue();
+
+            // 返回编译是否成功
             if (exitValue != 0) {
-                throw new RunException("error executing command exitValue:[{}] result:[{}]", new Object[]{exitValue, result});
+                throw new RunException("error executing command exitValue:[{}] result:[{}]", exitValue, result);
             }
 
-            var8 = result;
-        } catch (Exception var12) {
-            log.error("unknown exception in command execution", var12);
-            return "";
+            return result;
+        } catch (Exception e) {
+            log.error("----------------------------------------------------------------------------------------------------------");
+            log.error("unknown exception in command execution", e);
+            log.error("----------------------------------------------------------------------------------------------------------");
         } finally {
             if (process != null) {
                 process.destroy();
             }
-
-            IOUtils.closeIO(new Closeable[]{inputStream});
+            IOUtils.closeIO(inputStream);
         }
 
-        return var8;
+        return StringUtils.EMPTY;
     }
-
 
 }

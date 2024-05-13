@@ -2,7 +2,8 @@ logging:
   pattern:
     file: '%d{yyyy-MM-dd HH:mm:ss} [%5level] [%thread] %-28logger{20} : %msg%n'
   file:
-    path: ./
+    path: ./log
+    name: simulator.log
 
 # 根路径配置
 server:

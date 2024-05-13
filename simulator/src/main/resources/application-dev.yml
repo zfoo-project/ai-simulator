@@ -1,13 +1,9 @@
 logging:
   pattern:
     console: '%d{yyyy-MM-dd HH:mm:ss} [%clr(%5level)] [%thread] %clr(%logger{20}.%M){cyan}\(%F:%line\) - %msg%n'
-
-# 根路径配置
-server:
-  address: 0.0.0.0
-  port: 17333
-  servlet:
-    context-path: /
+  file:
+    name:
+    path:
 
 simulator:
   port: 17313
@@ -22,10 +18,3 @@ simulator:
 #    - tencent
 #    - openai
 #    - google
-
-
-net:
-  id: netConfig
-  protocol-location: protocol.xml
-  code-languages: 0
-  fold-protocol: true

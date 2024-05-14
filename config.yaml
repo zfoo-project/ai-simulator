@@ -1,3 +1,4 @@
+versionUrl: http://simulator.godot.fun/version.json
 headless: false
 simulators:
   - alibaba

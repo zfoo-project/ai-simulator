@@ -67,9 +67,7 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
             if (configFile.exists()) {
                 var yaml = new Yaml();
                 var customConfig = yaml.loadAs(FileUtils.readFileToString(configFile), SimulatorConfig.class);
-                simulatorConfig.setSimulators(customConfig.getSimulators());
-                simulatorConfig.setHeadless(customConfig.isHeadless());
-                simulatorConfig.setVersionUrl(customConfig.getVersionUrl());
+                simulatorConfig.updateConfig(customConfig);
             }
         }
 

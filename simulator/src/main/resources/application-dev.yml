@@ -9,7 +9,7 @@ simulator:
   nodePath: C:/Program Files/nodejs/node.exe
   chromePath: D:\Project\puppeteer-start\puppeteer\chrome\win64-123.0.6312.122\chrome-win64\chrome.exe
   workingPath: D:\Project\ai-simulator
-  versionUrl: http://simulator.godot.fun/version2.json
+  versionUrl: http://simulator.godot.fun/version.json
   headless: false
   simulators:
 #    - alibaba

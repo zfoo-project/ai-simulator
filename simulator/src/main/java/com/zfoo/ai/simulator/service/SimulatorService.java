@@ -22,6 +22,7 @@ import com.zfoo.event.model.AppStartEvent;
 import com.zfoo.net.NetContext;
 import com.zfoo.net.core.HostAndPort;
 import com.zfoo.net.core.websocket.WebsocketServer;
+import com.zfoo.net.util.security.ZipUtils;
 import com.zfoo.protocol.collection.CollectionUtils;
 import com.zfoo.protocol.collection.concurrent.ConcurrentHashSet;
 import com.zfoo.protocol.util.FileUtils;
@@ -35,6 +36,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.Yaml;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -67,7 +69,7 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
                 var customConfig = yaml.loadAs(FileUtils.readFileToString(configFile), SimulatorConfig.class);
                 simulatorConfig.setSimulators(customConfig.getSimulators());
                 simulatorConfig.setHeadless(customConfig.isHeadless());
-                simulatorConfig.setUpdateUrl(customConfig.getUpdateUrl());
+                simulatorConfig.setVersionUrl(customConfig.getVersionUrl());
             }
         }
 
@@ -88,32 +90,37 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
         }
     }
 
-    @SneakyThrows
     private void updateVersion() {
-        var updateUrl = simulatorConfig.getUpdateUrl();
-        if (StringUtils.isBlank(updateUrl)) {
-            return;
+        try {
+            var versionUrl = simulatorConfig.getVersionUrl();
+            if (StringUtils.isBlank(versionUrl)) {
+                return;
+            }
+            log.info("版本地址[{}]", versionUrl);
+            var remoteVersionJson = HttpUtils.get(versionUrl);
+            var remoteVersionConfig = JsonUtils.string2Object(remoteVersionJson, VersionConfig.class);
+
+            // 本地配置
+            var localVersionFile = new File("version.json");
+            VersionConfig localVersionConfig = new VersionConfig();
+            if (localVersionFile.exists()) {
+                var localVersionConfigJson = FileUtils.readFileToString(localVersionFile);
+                localVersionConfig = JsonUtils.string2Object(localVersionConfigJson, VersionConfig.class);
+            }
+
+            if (remoteVersionConfig.getVersion().equals(localVersionConfig.getVersion())) {
+                return;
+            }
+
+            // 下载并解压热更新文件
+            var bytes = HttpUtils.getBytes(remoteVersionConfig.getUpdateUrl());
+            ZipUtils.unzip(new ByteArrayInputStream(bytes), "./");
+
+            // 解压完成后覆盖本地的version.json文件
+            FileUtils.writeStringToFile(localVersionFile, remoteVersionJson, false);
+        } catch (Exception e) {
+            log.info("update version exception", e);
         }
-        var remoteVersionUrl = StringUtils.format("{}/version.json", updateUrl);
-        log.info("版本地址[{}]", remoteVersionUrl);
-        var remoteVersionJson = HttpUtils.get(remoteVersionUrl);
-        var remoteVersionConfig = JsonUtils.string2Object(remoteVersionJson, VersionConfig.class);
-
-        // 本地配置
-        var localVersionFile = new File("version.json");
-        VersionConfig localVersionConfig = new VersionConfig();
-        if (localVersionFile.exists()) {
-            var localVersionConfigJson = FileUtils.readFileToString(localVersionFile);
-            localVersionConfig = JsonUtils.string2Object(localVersionConfigJson, VersionConfig.class);
-        }
-
-        if (remoteVersionConfig.getSimulatorVersion().equals(localVersionConfig.getSimulatorVersion())) {
-            return;
-        }
-
-        // 下载热更新文件
-        var bytes = HttpUtils.getBytes(remoteVersionConfig.getSimulatorResourceUrl());
-
     }
 
     public void createSimulator(String simulator) {
@@ -151,7 +158,7 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
     public String simulator(long sidOfSimulator) {
         for (var entry : simulatorSessionMap.entrySet()) {
             var simulator = entry.getKey();
-            var sessionIds= entry.getValue();
+            var sessionIds = entry.getValue();
             for (var sid : sessionIds) {
                 if (sid == sidOfSimulator) {
                     return simulator;

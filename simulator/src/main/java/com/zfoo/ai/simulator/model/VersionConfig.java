@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class VersionConfig {
 
-    private String simulatorVersion = StringUtils.EMPTY;
-    private String simulatorResourceUrl = StringUtils.EMPTY;
+    private String version = StringUtils.EMPTY;
+    private String updateUrl = StringUtils.EMPTY;
 
 }

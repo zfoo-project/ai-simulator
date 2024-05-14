@@ -22,7 +22,7 @@ public class SimulatorConfig {
 
     private String workingPath;
 
-    private String updateUrl;
+    private String versionUrl;
 
     private boolean headless;
 

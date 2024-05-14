@@ -14,8 +14,8 @@ public class VersionTest {
     @Test
     public void test() {
         var versionConfig = new VersionConfig();
-        versionConfig.setSimulatorVersion("1.0.0");
-        versionConfig.setSimulatorResourceUrl("http://simulator.godot.fun/simulator-1.0.0.rar");
+        versionConfig.setVersion("1.0.0");
+        versionConfig.setUpdateUrl("http://simulator.godot.fun/simulator-1.0.0.rar");
         System.out.println(JsonUtils.object2String(versionConfig));
     }
 

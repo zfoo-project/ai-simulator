@@ -16,11 +16,13 @@ import com.zfoo.net.config.model.NetConfig;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportRuntimeHints;
 
 /**
  * @author jaysunxiao
  */
 @Configuration
+@ImportRuntimeHints(GraalvmHints.class)
 public class AutoConfiguration {
 
     @Bean
@@ -30,3 +32,5 @@ public class AutoConfiguration {
     }
 
 }
+
+

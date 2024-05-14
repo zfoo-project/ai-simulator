@@ -94,8 +94,9 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
             if (StringUtils.isBlank(versionUrl)) {
                 return;
             }
-            log.info("版本地址[{}]", versionUrl);
+            log.info("获取版本地址[{}]", versionUrl);
             var remoteVersionJson = HttpUtils.get(versionUrl);
+            log.info("remoteVersion:[{}]", remoteVersionJson);
             var remoteVersionConfig = JsonUtils.string2Object(remoteVersionJson, VersionConfig.class);
 
             // 本地配置
@@ -107,6 +108,7 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
             }
 
             if (remoteVersionConfig.getVersion().equals(localVersionConfig.getVersion())) {
+                log.info("版本相同无须更新");
                 return;
             }
 

@@ -4,5 +4,5 @@ simulators:
   - alibaba
   - baidu
   - tencent
-  - openai
-  - google
+#  - google
+#  - openai

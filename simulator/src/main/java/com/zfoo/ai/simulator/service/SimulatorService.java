@@ -59,7 +59,8 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
     @Autowired
     private ChatBotService chatBotService;
 
-    public VersionConfig versionConfig;
+    public String readme = "欢迎使用AI模拟器！";
+
     @SneakyThrows
     @Override
     public void onApplicationEvent(AppStartEvent event) {
@@ -75,6 +76,7 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
 
         // 更新热更文件
         updateVersion();
+        loadReadme();
 
         // 启动websocket服务器
         var port = simulatorConfig.getPort();
@@ -101,7 +103,6 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
         if (localVersionFile.exists()) {
             var localVersionConfigJson = FileUtils.readFileToString(localVersionFile);
             localVersionConfig = JsonUtils.string2Object(localVersionConfigJson, VersionConfig.class);
-            versionConfig = localVersionConfig;
         }
 
         try {
@@ -123,17 +124,17 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
             var bytes = HttpUtils.getBytes(remoteVersionConfig.getUpdateUrl());
             ZipUtils.unzip(new ByteArrayInputStream(bytes), "./");
 
-            // 更新document
-            if (StringUtils.isNotEmpty(remoteVersionConfig.getDocumentUrl())) {
-                var documentMarkdown = HttpUtils.get(remoteVersionConfig.getDocumentUrl());
-                remoteVersionConfig.setDocument(documentMarkdown);
-            }
-
             // 解压完成后覆盖本地的version.json文件
             FileUtils.writeStringToFile(localVersionFile, remoteVersionJson, false);
-            versionConfig = remoteVersionConfig;
         } catch (Exception e) {
             log.info("update version exception", e);
+        }
+    }
+
+    private void loadReadme() {
+        var readmeFile = new File("README.md");
+        if (readmeFile.exists()) {
+            readme = FileUtils.readFileToString(readmeFile);
         }
     }
 

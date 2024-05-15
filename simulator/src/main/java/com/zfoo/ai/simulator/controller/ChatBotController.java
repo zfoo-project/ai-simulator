@@ -68,15 +68,7 @@ public class ChatBotController {
         log.info("atChatBotRegisterRequest chatBot 已连接 [sid:{}]", session.getSid());
         NetContext.getRouter().send(session, new ChatBotRegisterResponse());
 
-        // 发送document
-        var versionConfig = simulatorService.versionConfig;
-        if (versionConfig == null) {
-            return;
-        }
-        if (StringUtils.isBlank(versionConfig.getDocument())) {
-            return;
-        }
-        chatBotService.sendToChatBot("zfoo", versionConfig.getDocument());
+        chatBotService.sendToChatBot("zfoo", simulatorService.readme);
     }
 
     @EventReceiver

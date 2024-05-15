@@ -1,6 +1,4 @@
 {
   "version": "0.0.1",
-  "updateUrl": "http://simulator.godot.fun/simulator-0.0.1.zip",
-  "documentUrl": "http://simulator.godot.fun/README.md",
-  "document": "欢迎来到AI模拟器"
+  "updateUrl": "http://simulator.godot.fun/simulator-0.0.1.zip"
 }

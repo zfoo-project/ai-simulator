@@ -95,6 +95,15 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
     }
 
     private void updateVersion() {
+        // 本地配置
+        var localVersionFile = new File("version.json");
+        VersionConfig localVersionConfig = new VersionConfig();
+        if (localVersionFile.exists()) {
+            var localVersionConfigJson = FileUtils.readFileToString(localVersionFile);
+            localVersionConfig = JsonUtils.string2Object(localVersionConfigJson, VersionConfig.class);
+            versionConfig = localVersionConfig;
+        }
+
         try {
             var versionUrl = simulatorConfig.getVersionUrl();
             if (StringUtils.isBlank(versionUrl)) {
@@ -105,17 +114,8 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
             log.info("remoteVersion:[{}]", remoteVersionJson);
             var remoteVersionConfig = JsonUtils.string2Object(remoteVersionJson, VersionConfig.class);
 
-            // 本地配置
-            var localVersionFile = new File("version.json");
-            VersionConfig localVersionConfig = new VersionConfig();
-            if (localVersionFile.exists()) {
-                var localVersionConfigJson = FileUtils.readFileToString(localVersionFile);
-                localVersionConfig = JsonUtils.string2Object(localVersionConfigJson, VersionConfig.class);
-            }
-
             if (remoteVersionConfig.getVersion().equals(localVersionConfig.getVersion())) {
                 log.info("版本相同无须更新");
-                versionConfig = localVersionConfig;
                 return;
             }
 

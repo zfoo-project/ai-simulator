@@ -31,14 +31,14 @@ public class ChatBotService {
 
     public ConcurrentHashSet<Long> chatBotSessions = new ConcurrentHashSet<>();
 
-    private AtomicLong atomicRequestId = new AtomicLong(3000);
+    private AtomicLong atomicRequestId = new AtomicLong(-1_0000);
     public void sendToChatBot(String simulator, String message) {
         var requestId = atomicRequestId.incrementAndGet();
         sendToChatBot(requestId, simulator, message);
     }
 
     public void sendToChatBot(long requestId, String simulator, String message) {
-        var simulatorRequestId = Long.parseLong(StringUtils.format("{}{}", HashUtils.fnvHash(simulator), requestId));
+        var simulatorRequestId = Long.parseLong(StringUtils.format("{}{}", requestId, Math.abs(HashUtils.fnvHash(simulator))));
         var notice = new ChatBotNotice(simulatorRequestId, simulator, message);
         for (var sid : chatBotSessions) {
             var session = NetContext.getSessionManager().getServerSession(sid);

@@ -74,13 +74,17 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
         // 更新热更文件
         updateVersion();
 
+        // 启动websocket服务器
         var port = simulatorConfig.getPort();
         var brokerServer = new WebsocketServer(HostAndPort.valueOf("0.0.0.0", port));
         brokerServer.start();
+        log.info("Tomcat start at [http://localhost:17333]");
 
         // 打开默认地址
         // start chrome.exe https://www.baidu.com
-        CommandUtils.execCommand("cmd /c start http://localhost:17333");
+        if (!EnvUtils.isDevelopment()) {
+            CommandUtils.execCommand("cmd /c start http://localhost:17333");
+        }
 
         // 启动ai 模拟器
         for (var simulator : simulatorConfig.getSimulators()) {

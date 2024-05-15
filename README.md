@@ -1,6 +1,6 @@
 ## ai-simulator
 
-本地运行的免费AI模拟器，目前支持以下AI
+本地运行的免费AI模拟器，理论上可以支持所有网页端的AI，目前支持以下AI
 
 - OpenAI
 - Google Gemini

@@ -1,12 +1,12 @@
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import {startWebsocketClient, registerPacketReceiver, send, delay} from './websocket.mjs';
-import SimulatorChatAsk from "./zfooes/packet/SimulatorChatAsk.mjs";
-import SimulatorChatAnswer from "./zfooes/packet/SimulatorChatAnswer.mjs";
+import SimulatorChatAsk from "../zfooes/packet/SimulatorChatAsk.mjs";
+import SimulatorChatAnswer from "../zfooes/packet/SimulatorChatAnswer.mjs";
 import {copyBefore, copyAfter, htmlToMarkdown, sendNotLoginStatus, sendRestartStatus} from './simulator.mjs';
 
-const simulator = 'tencent';
-const url = 'https://hunyuan.tencent.com/bot/chat';
+const simulator = 'baidu';
+const url = 'https://yiyan.baidu.com';
 
 // status
 let login = false;
@@ -51,7 +51,7 @@ await page.goto(url, {waitUntil: 'networkidle0'});
 
 // ---------------------------------------------------------------------------------------------------------------------
 const checkLoginStatues = async () => {
-    const loginButton = await page.$('.portal-header__r__btn');
+    const loginButton = await page.$('.lpzMgwiN');
     if (loginButton == null) {
         login = true;
         return;
@@ -84,11 +84,11 @@ const askQuestion = async () => {
         return;
     }
     currentQuestion = questions.pop();
-    const inputSelector = '.chat-input-editor';
+    const inputSelector = '.yc-editor-paragraph';
     await page.waitForSelector(inputSelector);
     await page.focus(inputSelector);
     await page.click(inputSelector);
-    await page.type(inputSelector, currentQuestion.message,  {delay: 100});
+    await page.type(inputSelector, currentQuestion.message, {delay: 100});
     await page.keyboard.press("Enter");
 
     generating = true;
@@ -102,7 +102,7 @@ const updateQuestion = async () => {
         return;
     }
 
-    const answers = await page.$$('.chat-bubble-content');
+    const answers = await page.$$('.custom-html');
     if (answers.length <= 0) {
         return;
     }
@@ -129,7 +129,7 @@ const completeQuestion = async () => {
     if (!login || !generating) {
         return;
     }
-    const generatingButton = await page.$('.style__ai-opt-btn-text___PW2ht');
+    const generatingButton = await page.$('.OqprhQCY');
     if (generatingButton != null) {
         return;
     }
@@ -137,13 +137,14 @@ const completeQuestion = async () => {
     if (now - generateTime < 7 * 1000) {
         return;
     }
-    const copyEles = await page.$$('.icon-copy2');
+    // const answers = await page.$$('.custom-html');
+    const copyEles = await page.$$('.Ek_OG88D');
     const length = copyEles.length;
     if (length === 0) {
         return;
     }
     await copyBefore();
-    const copyButton = copyEles[0];
+    const copyButton = copyEles[0]
     await copyButton.focus();
     await copyButton.click();
     const clipboard = await copyAfter();

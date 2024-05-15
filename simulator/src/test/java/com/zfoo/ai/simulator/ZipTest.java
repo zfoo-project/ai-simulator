@@ -23,9 +23,6 @@ public class ZipTest {
         var sourceFilePaths = new ArrayList<String>();
         for (var file : projectFile.listFiles()) {
             var name = file.getName();
-            if (name.equals("websocket.mjs") || name.equals("simulator.mjs")) {
-                continue;
-            }
             if (name.endsWith(".mjs")) {
                 sourceFilePaths.add(file.getAbsolutePath());
             }

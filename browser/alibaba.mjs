@@ -1,8 +1,8 @@
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import {startWebsocketClient, registerPacketReceiver, send, delay} from './websocket.mjs';
-import SimulatorChatAsk from "./zfooes/packet/SimulatorChatAsk.mjs";
-import SimulatorChatAnswer from "./zfooes/packet/SimulatorChatAnswer.mjs";
+import SimulatorChatAsk from "../zfooes/packet/SimulatorChatAsk.mjs";
+import SimulatorChatAnswer from "../zfooes/packet/SimulatorChatAnswer.mjs";
 import {copyBefore, copyAfter, htmlToMarkdown, sendNotLoginStatus, sendRestartStatus} from './simulator.mjs';
 
 const simulator = 'alibaba';

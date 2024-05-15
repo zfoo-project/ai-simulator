@@ -146,7 +146,7 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
         var thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                var command = StringUtils.format("{} {}/{}.mjs {} {}", nodePath, workingPath, simulator, chromePath, headless);
+                var command = StringUtils.format("{} {}/browser/{}.mjs {} {}", nodePath, workingPath, simulator, chromePath, headless);
                 CommandUtils.execCommand(command, workingPath);
                 SchedulerBus.schedule(() -> createSimulator(simulator), 5, TimeUnit.SECONDS);
             }

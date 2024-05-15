@@ -1,12 +1,12 @@
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import {startWebsocketClient, registerPacketReceiver, send, delay} from './websocket.mjs';
-import SimulatorChatAsk from "./zfooes/packet/SimulatorChatAsk.mjs";
-import SimulatorChatAnswer from "./zfooes/packet/SimulatorChatAnswer.mjs";
+import SimulatorChatAsk from "../zfooes/packet/SimulatorChatAsk.mjs";
+import SimulatorChatAnswer from "../zfooes/packet/SimulatorChatAnswer.mjs";
 import {copyBefore, copyAfter, htmlToMarkdown, sendNotLoginStatus, sendRestartStatus} from './simulator.mjs';
 
-const simulator = 'openai';
-const url = 'https://chatgpt.com';
+const simulator = 'google';
+const url = 'https://gemini.google.com/';
 
 // status
 let login = false;
@@ -29,8 +29,15 @@ if (process.argv.length >= 4) {
 }
 console.log(`simulator:[${simulator}] chromePath:[${chromePath}] headless:[${headless}]`);
 // ---------------------------------------------------------------------------------------------------------------------
+// https://github.com/berstend/puppeteer-extra/issues/822
+const stealth = StealthPlugin();
+stealth.enabledEvasions.delete('iframe.contentWindow');
+stealth.enabledEvasions.delete('media.codecs');
+
 // open browser
-puppeteer.use(StealthPlugin());
+puppeteer.use(stealth);
+
+
 // Launch the browser and open a new blank page
 const browser = await puppeteer.launch(
     {
@@ -51,9 +58,8 @@ await page.goto(url, {waitUntil: 'networkidle0'});
 
 // ---------------------------------------------------------------------------------------------------------------------
 const checkLoginStatues = async () => {
-    // 匹配标签 id = prompt-textarea
-    const inputButton = await page.$('#prompt-textarea');
-    if (inputButton != null) {
+    const loginButton = await page.$('.gb_Kd');
+    if (loginButton == null) {
         login = true;
         return;
     }
@@ -85,11 +91,11 @@ const askQuestion = async () => {
         return;
     }
     currentQuestion = questions.pop();
-    const inputSelector = '#prompt-textarea';
+    const inputSelector = '.text-input-field_textarea-inner';
     await page.waitForSelector(inputSelector);
     await page.focus(inputSelector);
     await page.click(inputSelector);
-    await page.type(inputSelector, currentQuestion.message,  {delay: 100});
+    await page.type(inputSelector, currentQuestion.message, {delay: 100});
     await page.keyboard.press("Enter");
 
     generating = true;
@@ -103,12 +109,12 @@ const updateQuestion = async () => {
         return;
     }
 
-    const answers = await page.$$('.result-streaming');
+    const answers = await page.$$('.response-content');
     if (answers.length <= 0) {
         return;
     }
 
-    const lastElement = answers[0];
+    const lastElement = answers[answers.length - 1];
     const html = await lastElement?.evaluate(el => el.innerHTML);
     if (html === lastGenerateText) {
         return;
@@ -130,22 +136,32 @@ const completeQuestion = async () => {
     if (!login || !generating) {
         return;
     }
-    const generatingButton = await page.$('[aria-label="Stop generating"]');
-    if (generatingButton != null) {
+    // avatar avatar_primary ng-tns-c4259832047-31 ng-star-inserted
+    // avatar avatar_primary ng-tns-c4259832047-96 ng-star-inserted
+    const answers = await page.$$('.response-content');
+    const menuButtons = await page.$$('[aria-label="Show more options"]');
+
+    if (answers.length !== menuButtons.length) {
         return;
     }
     const now = new Date().getTime();
     if (now - generateTime < 7 * 1000) {
         return;
     }
-    const copyEles = await page.$$('.icon-md-heavy');
-    const length = copyEles.length;
-    if (length === 0) {
-        return;
-    }
+
+    const menuButton = menuButtons[menuButtons.length - 1];
+    await menuButton.focus();
+    await menuButton.click();
+
+    const copyButtonSelector = '[aria-label="Copy"]';
+    await page.waitForSelector(copyButtonSelector);
+    const copyButton = await page.$(copyButtonSelector);
+    await page.focus(copyButtonSelector);
+    // await page.click(copyButtonSelector);
     await copyBefore();
-    const copyButton = copyEles[length - 1]
-    await copyButton.click();
+    await page.evaluate((btn) => {
+        btn.click();
+    }, copyButton);
     const clipboard = await copyAfter();
     console.log("copy-----------------------------------------------------------------------------------------------------------");
     console.log(clipboard);

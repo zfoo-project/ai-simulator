@@ -38,6 +38,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -58,6 +59,7 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
     @Autowired
     private ChatBotService chatBotService;
 
+    public VersionConfig versionConfig;
     @SneakyThrows
     @Override
     public void onApplicationEvent(AppStartEvent event) {
@@ -113,6 +115,7 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
 
             if (remoteVersionConfig.getVersion().equals(localVersionConfig.getVersion())) {
                 log.info("版本相同无须更新");
+                versionConfig = localVersionConfig;
                 return;
             }
 
@@ -120,12 +123,20 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
             var bytes = HttpUtils.getBytes(remoteVersionConfig.getUpdateUrl());
             ZipUtils.unzip(new ByteArrayInputStream(bytes), "./");
 
+            // 更新document
+            if (StringUtils.isNotEmpty(remoteVersionConfig.getDocumentUrl())) {
+                var documentMarkdown = HttpUtils.get(remoteVersionConfig.getDocumentUrl());
+                remoteVersionConfig.setDocument(documentMarkdown);
+            }
+
             // 解压完成后覆盖本地的version.json文件
             FileUtils.writeStringToFile(localVersionFile, remoteVersionJson, false);
+            versionConfig = remoteVersionConfig;
         } catch (Exception e) {
             log.info("update version exception", e);
         }
     }
+
 
     public void createSimulator(String simulator) {
         var nodePath = simulatorConfig.getNodePath();

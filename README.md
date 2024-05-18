@@ -12,7 +12,7 @@
 
 ## 一次运行到处白漂
 
-![img01.png](./simulator/image/img01.png)
+![img01.png](./doc/image/img01.png)
 
 ## FAQ
 

@@ -1,9 +1,9 @@
 import clipboardy from 'clipboardy';
 import TurndownService from 'turndown';
 import {send, asyncAsk} from './websocket.mjs';
-import ClipboardLockAsk from "../zfooes/packet/ClipboardLockAsk.mjs";
-import ClipboardUnlockAsk from "../zfooes/packet/ClipboardUnlockAsk.mjs";
-import SimulatorStatusAsk from "../zfooes/packet/SimulatorStatusAsk.mjs";
+import ClipboardLockAsk from "./zfooes/packet/ClipboardLockAsk.mjs";
+import ClipboardUnlockAsk from "./zfooes/packet/ClipboardUnlockAsk.mjs";
+import SimulatorStatusAsk from "./zfooes/packet/SimulatorStatusAsk.mjs";
 
 
 // ---------------------------------------------------------------------------------------------------------------------

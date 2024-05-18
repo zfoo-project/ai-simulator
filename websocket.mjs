@@ -1,14 +1,14 @@
 import WebSocket from "ws";
 
-import ByteBuffer from '../zfooes/buffer/ByteBuffer.mjs';
-import SignalAttachment from '../zfooes/attachment/SignalAttachment.mjs';
-import ProtocolManager from '../zfooes/ProtocolManager.mjs';
-import Error from '../zfooes/common/Error.mjs';
-import Message from '../zfooes/common/Message.mjs';
-import Ping from '../zfooes/common/Ping.mjs';
-import Pong from '../zfooes/common/Pong.mjs';
-import SimulatorRegisterAsk from "../zfooes/packet/SimulatorRegisterAsk.mjs";
-import SimulatorRegisterAnswer from "../zfooes/packet/SimulatorRegisterAnswer.mjs";
+import ByteBuffer from './zfooes/buffer/ByteBuffer.mjs';
+import SignalAttachment from './zfooes/attachment/SignalAttachment.mjs';
+import ProtocolManager from './zfooes/ProtocolManager.mjs';
+import Error from './zfooes/common/Error.mjs';
+import Message from './zfooes/common/Message.mjs';
+import Ping from './zfooes/common/Ping.mjs';
+import Pong from './zfooes/common/Pong.mjs';
+import SimulatorRegisterAsk from "./zfooes/packet/SimulatorRegisterAsk.mjs";
+import SimulatorRegisterAnswer from "./zfooes/packet/SimulatorRegisterAnswer.mjs";
 
 
 const wsUrl = "ws://127.0.0.1:17313/websocket";

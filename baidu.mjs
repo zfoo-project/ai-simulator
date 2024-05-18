@@ -1,12 +1,12 @@
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
 import {startWebsocketClient, registerPacketReceiver, send, delay} from './websocket.mjs';
-import SimulatorChatAsk from "../zfooes/packet/SimulatorChatAsk.mjs";
-import SimulatorChatAnswer from "../zfooes/packet/SimulatorChatAnswer.mjs";
+import SimulatorChatAsk from "./zfooes/packet/SimulatorChatAsk.mjs";
+import SimulatorChatAnswer from "./zfooes/packet/SimulatorChatAnswer.mjs";
 import {copyBefore, copyAfter, htmlToMarkdown, sendNotLoginStatus, sendRestartStatus} from './simulator.mjs';
 
-const simulator = 'openai';
-const url = 'https://chatgpt.com';
+const simulator = 'baidu';
+const url = 'https://yiyan.baidu.com';
 
 // status
 let login = false;
@@ -51,9 +51,8 @@ await page.goto(url, {waitUntil: 'networkidle0'});
 
 // ---------------------------------------------------------------------------------------------------------------------
 const checkLoginStatues = async () => {
-    // 匹配标签 id = prompt-textarea
-    const inputButton = await page.$('#prompt-textarea');
-    if (inputButton != null) {
+    const loginButton = await page.$('.lpzMgwiN');
+    if (loginButton == null) {
         login = true;
         return;
     }
@@ -85,11 +84,11 @@ const askQuestion = async () => {
         return;
     }
     currentQuestion = questions.pop();
-    const inputSelector = '#prompt-textarea';
+    const inputSelector = '.yc-editor-paragraph';
     await page.waitForSelector(inputSelector);
     await page.focus(inputSelector);
     await page.click(inputSelector);
-    await page.type(inputSelector, currentQuestion.message,  {delay: 100});
+    await page.type(inputSelector, currentQuestion.message, {delay: 100});
     await page.keyboard.press("Enter");
 
     generating = true;
@@ -103,7 +102,7 @@ const updateQuestion = async () => {
         return;
     }
 
-    const answers = await page.$$('.result-streaming');
+    const answers = await page.$$('.custom-html');
     if (answers.length <= 0) {
         return;
     }
@@ -130,7 +129,7 @@ const completeQuestion = async () => {
     if (!login || !generating) {
         return;
     }
-    const generatingButton = await page.$('[aria-label="Stop generating"]');
+    const generatingButton = await page.$('.OqprhQCY');
     if (generatingButton != null) {
         return;
     }
@@ -138,13 +137,15 @@ const completeQuestion = async () => {
     if (now - generateTime < 7 * 1000) {
         return;
     }
-    const copyEles = await page.$$('.icon-md-heavy');
+    // const answers = await page.$$('.custom-html');
+    const copyEles = await page.$$('.Ek_OG88D');
     const length = copyEles.length;
     if (length === 0) {
         return;
     }
     await copyBefore();
-    const copyButton = copyEles[length - 1]
+    const copyButton = copyEles[0]
+    await copyButton.focus();
     await copyButton.click();
     const clipboard = await copyAfter();
     console.log("copy-----------------------------------------------------------------------------------------------------------");

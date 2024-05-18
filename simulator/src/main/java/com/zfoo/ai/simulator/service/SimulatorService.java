@@ -66,7 +66,7 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
     public void onApplicationEvent(AppStartEvent event) {
         // 非开发环境，优先使用外部的配置文件
         if (!EnvUtils.isDevelopment()) {
-            var configFile = new File("config.yaml");
+            var configFile = new File("ai-config.yaml");
             if (configFile.exists()) {
                 var yaml = new Yaml();
                 var customConfig = yaml.loadAs(FileUtils.readFileToString(configFile), SimulatorConfig.class);

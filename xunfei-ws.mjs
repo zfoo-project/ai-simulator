@@ -1,12 +1,12 @@
-import puppeteer from 'puppeteer-extra';
-import StealthPlugin from 'puppeteer-extra-plugin-stealth';
+import axios from 'axios';
+import puppeteer from 'puppeteer';
 import {startWebsocketClient, registerPacketReceiver, send, delay} from './websocket.mjs';
 import SimulatorChatAsk from "./zfooes/packet/SimulatorChatAsk.mjs";
 import SimulatorChatAnswer from "./zfooes/packet/SimulatorChatAnswer.mjs";
 import {copyBefore, copyAfter, htmlToMarkdown, sendNotLoginStatus, sendRestartStatus} from './simulator.mjs';
 
-const simulator = 'alibaba';
-const url = 'https://tongyi.aliyun.com/qianwen';
+const simulator = 'xunfei';
+const url = 'https://xinghuo.xfyun.cn/';
 
 // status
 let login = false;
@@ -28,31 +28,28 @@ if (process.argv.length >= 4) {
     headless = process.argv[3] === "true";
 }
 console.log(`simulator:[${simulator}] chromePath:[${chromePath}] headless:[${headless}]`);
+
+// --remote-debugging-port=9222
+const wsKey = await axios.get('http://localhost:9222/json/version');
+console.log(wsKey);
 // ---------------------------------------------------------------------------------------------------------------------
 // C:\Users\Administrator\.cache\puppeteer
-// open browser
-puppeteer.use(StealthPlugin());
 // Launch the browser and open a new blank page
-const browser = await puppeteer.launch(
+const browser = await puppeteer.connect(
     {
-        headless: headless,
-        executablePath: chromePath,
-        userDataDir: './userData/' + simulator
+        browserWSEndpoint: wsKey.data.webSocketDebuggerUrl,
+        browserURL: wsKey.webSocketDebuggerUrl,
+        defaultViewport:null
     }
 );
 const context = browser.defaultBrowserContext();
 await context.overridePermissions(url, ['clipboard-read', 'clipboard-write', 'clipboard-sanitized-write']);
-const page = await browser.newPage();
-await page.setViewport({
-    width: 1280,
-    height: 768,
-    deviceScaleFactor: 1
-});
-await page.goto(url, {waitUntil: 'networkidle0'});
+const pages = await browser.pages();
+const page = pages[0];
 
 // ---------------------------------------------------------------------------------------------------------------------
 const checkLoginStatues = async () => {
-    const loginButton = await page.$('.tagBtn--g8CQ4gKW');
+    const loginButton = await page.$('.header_login_button__bAAR8');
     if (loginButton == null) {
         login = true;
         return;
@@ -162,7 +159,7 @@ const completeQuestion = async () => {
 
 // ---------------------------------------------------------------------------------------------------------------------
 const tick = async () => {
-    // await page.keyboard.press("PageDown");
+    await page.keyboard.press("PageDown");
 }
 // ---------------------------------------------------------------------------------------------------------------------
 // initWebsocket

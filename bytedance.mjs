@@ -5,8 +5,8 @@ import SimulatorChatAsk from "./zfooes/packet/SimulatorChatAsk.mjs";
 import SimulatorChatAnswer from "./zfooes/packet/SimulatorChatAnswer.mjs";
 import {copyBefore, copyAfter, htmlToMarkdown, sendNotLoginStatus, sendRestartStatus} from './simulator.mjs';
 
-const simulator = 'alibaba';
-const url = 'https://tongyi.aliyun.com/qianwen';
+const simulator = 'bytedance';
+const url = 'https://www.doubao.com';
 
 // status
 let login = false;
@@ -42,17 +42,13 @@ const browser = await puppeteer.launch(
 );
 const context = browser.defaultBrowserContext();
 await context.overridePermissions(url, ['clipboard-read', 'clipboard-write', 'clipboard-sanitized-write']);
-const page = await browser.newPage();
-await page.setViewport({
-    width: 1280,
-    height: 768,
-    deviceScaleFactor: 1
-});
+const pages = await browser.pages();
+const page = pages[0];
 await page.goto(url, {waitUntil: 'networkidle0'});
 
 // ---------------------------------------------------------------------------------------------------------------------
 const checkLoginStatues = async () => {
-    const loginButton = await page.$('.tagBtn--g8CQ4gKW');
+    const loginButton = await page.$('[data-testid="to_login_button"]');
     if (loginButton == null) {
         login = true;
         return;
@@ -85,7 +81,7 @@ const askQuestion = async () => {
         return;
     }
     currentQuestion = questions.pop();
-    const inputSelector = '.textarea--g7EUvnQR';
+    const inputSelector = '[data-testid="chat_input_input"]';
     await page.waitForSelector(inputSelector);
     await page.focus(inputSelector);
     await page.click(inputSelector);
@@ -103,7 +99,7 @@ const updateQuestion = async () => {
         return;
     }
 
-    const answers = await page.$$('.tongyi-ui-markdown');
+    const answers = await page.$$('.message-content');
     if (answers.length <= 0) {
         return;
     }
@@ -130,21 +126,18 @@ const completeQuestion = async () => {
     if (!login || !generating) {
         return;
     }
-    const generatingButton = await page.$('.stop--L_ctTut8');
-    if (generatingButton != null) {
+    const answers = await page.$$('.message-content');
+    const copyEles = await page.$$('[data-testid="message_action_copy"]');
+    if (answers.length !== copyEles.length) {
         return;
     }
     const now = new Date().getTime();
     if (now - generateTime < 7 * 1000) {
         return;
     }
-    const copyEles = await page.$$('.btn--Bw0FbWYV');
     const length = copyEles.length;
-    if (length === 0) {
-        return;
-    }
     await copyBefore();
-    const copyButton = copyEles[length - 3]
+    const copyButton = copyEles[length - 1]
     await copyButton.focus();
     await copyButton.click();
     const clipboard = await copyAfter();

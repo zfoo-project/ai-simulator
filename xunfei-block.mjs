@@ -5,8 +5,8 @@ import SimulatorChatAsk from "./zfooes/packet/SimulatorChatAsk.mjs";
 import SimulatorChatAnswer from "./zfooes/packet/SimulatorChatAnswer.mjs";
 import {copyBefore, copyAfter, htmlToMarkdown, sendNotLoginStatus, sendRestartStatus} from './simulator.mjs';
 
-const simulator = 'alibaba';
-const url = 'https://tongyi.aliyun.com/qianwen';
+const simulator = 'xunfei';
+const url = 'https://xinghuo.xfyun.cn/';
 
 // status
 let login = false;
@@ -42,17 +42,31 @@ const browser = await puppeteer.launch(
 );
 const context = browser.defaultBrowserContext();
 await context.overridePermissions(url, ['clipboard-read', 'clipboard-write', 'clipboard-sanitized-write']);
-const page = await browser.newPage();
-await page.setViewport({
-    width: 1280,
-    height: 768,
-    deviceScaleFactor: 1
+const pages = await browser.pages();
+const page = pages[0];
+page.on('framenavigated', frame => {
+    console.log('URL changed to ' + frame.url());
 });
+page.on('request', interceptedRequest => {
+    const allowRedirect = false; // 禁止地址栏重定向
+    if (interceptedRequest.isNavigationRequest() && allowRedirect === false) {
+    } else {
+    }
+});
+
 await page.goto(url, {waitUntil: 'networkidle0'});
+await page.evaluate(() => {
+    window.addEventListener('beforeunload', function(event) {
+        event.preventDefault();
+        event.returnValue = ''; // 设置为空字符串或者具体的提示信息
+        // 弹出提示框，询问用户是否要离开页面
+        // 返回值为空字符串时，用户可以继续离开；返回具体的提示信息时，用户会看到提示信息并确定是否要离开
+    });
+});
 
 // ---------------------------------------------------------------------------------------------------------------------
 const checkLoginStatues = async () => {
-    const loginButton = await page.$('.tagBtn--g8CQ4gKW');
+    const loginButton = await page.$('.header_login_button__bAAR8');
     if (loginButton == null) {
         login = true;
         return;
@@ -162,13 +176,15 @@ const completeQuestion = async () => {
 
 // ---------------------------------------------------------------------------------------------------------------------
 const tick = async () => {
-    // await page.keyboard.press("PageDown");
+    await page.keyboard.press("PageDown");
 }
 // ---------------------------------------------------------------------------------------------------------------------
 // initWebsocket
 registerPacketReceiver(SimulatorChatAsk.PROTOCOL_ID, atSimulatorChatAsk);
 startWebsocketClient(simulator);
-
+setInterval(async () => {
+    await page.keyboard.press("Escape");
+}, 1000);
 setInterval(async () => {
     await checkGenerateStatues();
     try {

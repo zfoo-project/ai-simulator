@@ -17,7 +17,6 @@
 
 ## 一次运行到处白漂
 
-
 ## FAQ
 
 - 为什么需要账号登录
@@ -29,3 +28,9 @@ ai模拟器，顾名思义，模拟用户本地操作的一个模拟程序，最
 ```text
 不提供任何VPN代理服务，完全是一个本地运行的模拟程序
 ```
+
+## 相关的依赖
+
+- [zfoo全场景RPC框架](https://github.com/zfoo-project/zfoo)
+- [lux-ui前端UI](https://github.com/yangjiakai/lux-ui)
+- [puppeteer浏览器控制](https://github.com/puppeteer/puppeteer)

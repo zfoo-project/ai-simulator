@@ -5,8 +5,8 @@ import SimulatorChatAsk from "./zfooes/packet/SimulatorChatAsk.mjs";
 import SimulatorChatAnswer from "./zfooes/packet/SimulatorChatAnswer.mjs";
 import {copyBefore, copyAfter, htmlToMarkdown, sendNotLoginStatus, sendRestartStatus} from './simulator.mjs';
 
-const simulator = 'baidu';
-const url = 'https://yiyan.baidu.com';
+const simulator = 'chatglm';
+const url = 'https://chatglm.cn/';
 
 // status
 let login = false;
@@ -29,6 +29,7 @@ if (process.argv.length >= 4) {
 }
 console.log(`simulator:[${simulator}] chromePath:[${chromePath}] headless:[${headless}]`);
 // ---------------------------------------------------------------------------------------------------------------------
+// C:\Users\Administrator\.cache\puppeteer
 // open browser
 puppeteer.use(StealthPlugin());
 // Launch the browser and open a new blank page
@@ -47,7 +48,7 @@ await page.goto(url, {waitUntil: 'networkidle0'});
 
 // ---------------------------------------------------------------------------------------------------------------------
 const checkLoginStatues = async () => {
-    const loginButton = await page.$('.lpzMgwiN');
+    const loginButton = await page.$('.tagBtn--g8CQ4gKW');
     if (loginButton == null) {
         login = true;
         return;
@@ -80,7 +81,7 @@ const askQuestion = async () => {
         return;
     }
     currentQuestion = questions.pop();
-    const inputSelector = '.yc-editor-paragraph';
+    const inputSelector = '.textarea--g7EUvnQR';
     await page.waitForSelector(inputSelector);
     await page.focus(inputSelector);
     await page.click(inputSelector);
@@ -98,12 +99,12 @@ const updateQuestion = async () => {
         return;
     }
 
-    const answers = await page.$$('.custom-html');
+    const answers = await page.$$('.tongyi-ui-markdown');
     if (answers.length <= 0) {
         return;
     }
 
-    const lastElement = answers[0];
+    const lastElement = answers[answers.length - 1];
     const html = await lastElement?.evaluate(el => el.innerHTML);
     if (html === lastGenerateText) {
         return;
@@ -125,7 +126,7 @@ const completeQuestion = async () => {
     if (!login || !generating) {
         return;
     }
-    const generatingButton = await page.$('.OqprhQCY');
+    const generatingButton = await page.$('.stop--L_ctTut8');
     if (generatingButton != null) {
         return;
     }
@@ -133,14 +134,13 @@ const completeQuestion = async () => {
     if (now - generateTime < 7 * 1000) {
         return;
     }
-    // const answers = await page.$$('.custom-html');
-    const copyEles = await page.$$('.Ek_OG88D');
+    const copyEles = await page.$$('.btn--Bw0FbWYV');
     const length = copyEles.length;
     if (length === 0) {
         return;
     }
     await copyBefore();
-    const copyButton = copyEles[0]
+    const copyButton = copyEles[length - 3]
     await copyButton.focus();
     await copyButton.click();
     const clipboard = await copyAfter();
@@ -158,7 +158,7 @@ const completeQuestion = async () => {
 
 // ---------------------------------------------------------------------------------------------------------------------
 const tick = async () => {
-    await page.keyboard.press("PageDown");
+    // await page.keyboard.press("PageDown");
 }
 // ---------------------------------------------------------------------------------------------------------------------
 // initWebsocket

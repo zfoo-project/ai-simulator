@@ -42,12 +42,8 @@ const browser = await puppeteer.launch(
 );
 const context = browser.defaultBrowserContext();
 await context.overridePermissions(url, ['clipboard-read', 'clipboard-write', 'clipboard-sanitized-write']);
-const page = await browser.newPage();
-await page.setViewport({
-    width: 1280,
-    height: 768,
-    deviceScaleFactor: 1
-});
+const pages = await browser.pages();
+const page = pages[0];
 await page.goto(url, {waitUntil: 'networkidle0'});
 
 // ---------------------------------------------------------------------------------------------------------------------

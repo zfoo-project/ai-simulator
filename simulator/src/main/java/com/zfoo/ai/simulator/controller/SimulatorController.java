@@ -24,6 +24,7 @@ import com.zfoo.net.anno.PacketReceiver;
 import com.zfoo.net.anno.Task;
 import com.zfoo.net.core.event.ServerSessionInactiveEvent;
 import com.zfoo.net.session.Session;
+import com.zfoo.net.util.HashUtils;
 import com.zfoo.protocol.collection.ArrayUtils;
 import com.zfoo.protocol.collection.concurrent.ConcurrentHashSet;
 import com.zfoo.protocol.util.RandomUtils;
@@ -72,7 +73,8 @@ public class SimulatorController {
         var markdown = answer.getMarkdown();
         // 只打印最后一句话
         var logMarkdown = substringAfterLastRegex(markdown, "[，,\\s]+");
-        log.info("atSimulatorChatAnswer requestId:[{}] simulator:[{}] markdown:[{}]", requestId, simulator, logMarkdown);
+        var simulatorRequestId = Long.parseLong(StringUtils.format("{}{}", requestId, Math.abs(HashUtils.fnvHash(simulator))));
+        log.info("atSimulatorChatAnswer requestId:[{}] simulator:[{}] simulatorRequestId:[{}] markdown:[{}]", requestId, simulator, simulatorRequestId, logMarkdown);
         chatBotService.sendToChatBot(requestId, simulator, markdown);
     }
 

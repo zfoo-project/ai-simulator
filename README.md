@@ -2,17 +2,21 @@
 
 本地运行的免费AI模拟器，理论上可以支持所有网页端的AI，目前支持以下AI
 
-- OpenAI
-- Google Gemini
-- 通义千问
-- 混元
-- 文心一言
+- 阿里-通义千问
+- 腾讯-混元
+- 百度-文心一言
+- 字节-豆包
+- 智谱清言
+- 天工AI
+- Kimi
+- Bing(需科学上网)
+- Google Gemini(需科学上网)
+- OpenAI(需科学上网，近期OpenAI策略调整，暂时无法访问)
 
 # Attention：本项目仅供学习交流使用，严禁用于任何商业用途
 
 ## 一次运行到处白漂
 
-![img01.png](./doc/image/img01.png)
 
 ## FAQ
 

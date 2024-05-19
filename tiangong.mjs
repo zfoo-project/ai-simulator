@@ -144,7 +144,6 @@ const completeQuestion = async () => {
     }
 
     const length = copyEles.length;
-    console.log(length)
     if (length === 0) {
         return;
     }

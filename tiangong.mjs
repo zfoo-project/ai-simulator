@@ -5,8 +5,8 @@ import SimulatorChatAsk from "./zfooes/packet/SimulatorChatAsk.mjs";
 import SimulatorChatAnswer from "./zfooes/packet/SimulatorChatAnswer.mjs";
 import {copyBefore, copyAfter, htmlToMarkdown, sendNotLoginStatus, sendRestartStatus} from './simulator.mjs';
 
-const simulator = 'chatglm';
-const url = 'https://chatglm.cn/main/alltoolsdetail';
+const simulator = 'tiangong';
+const url = 'https://www.tiangong.cn/chat/universal/016';
 
 // status
 let login = false;
@@ -48,7 +48,7 @@ await page.goto(url, {waitUntil: 'networkidle0'});
 
 // ---------------------------------------------------------------------------------------------------------------------
 const checkLoginStatues = async () => {
-    const loginButton = await page.$('.submit-btn');
+    const loginButton = await page.$('[placeholder="登录后，可向我发送问题"]');
     if (loginButton == null) {
         login = true;
         return;
@@ -81,7 +81,7 @@ const askQuestion = async () => {
         return;
     }
     currentQuestion = questions.pop();
-    const inputSelector = '.input-box-inner';
+    const inputSelector = '.el-textarea__inner';
     await page.waitForSelector(inputSelector);
     await page.focus(inputSelector);
     await page.click(inputSelector);
@@ -99,7 +99,7 @@ const updateQuestion = async () => {
         return;
     }
 
-    const answers = await page.$$('.answer-content-wrap');
+    const answers = await page.$$('.answerChatLiContent');
     if (answers.length <= 0) {
         return;
     }
@@ -126,7 +126,7 @@ const completeQuestion = async () => {
     if (!login || !generating) {
         return;
     }
-    const generatingButton = await page.$('[src="/img/pause_session.c3f2da00.svg"]');
+    const generatingButton = await page.$('[class="textHover text-[14px] font-normal leading-[170%] text-[#485568]"]');
     if (generatingButton != null) {
         return;
     }
@@ -134,14 +134,23 @@ const completeQuestion = async () => {
     if (now - generateTime < 7 * 1000) {
         return;
     }
-    const copyEles = await page.$$('.copy');
+    const copyEles = [];
+    const svgs = await page.$$('svg')
+    for (let i=0; i < svgs.length; i++) {
+        const valueHandle = await svgs[i].evaluate((el) => el.outerHTML);
+        console.log(valueHandle);
+        if (valueHandle.indexOf("copy-Q-") >= 0) {
+            copyEles.push(svgs[i]);
+        }
+    }
+
     const length = copyEles.length;
+    console.log(length)
     if (length === 0) {
         return;
     }
     await copyBefore();
     const copyButton = copyEles[length - 1]
-    await copyButton.focus();
     await copyButton.click();
     const clipboard = await copyAfter();
     console.log("copy-----------------------------------------------------------------------------------------------------------");

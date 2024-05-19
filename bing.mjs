@@ -5,8 +5,8 @@ import SimulatorChatAsk from "./zfooes/packet/SimulatorChatAsk.mjs";
 import SimulatorChatAnswer from "./zfooes/packet/SimulatorChatAnswer.mjs";
 import {copyBefore, copyAfter, htmlToMarkdown, sendNotLoginStatus, sendRestartStatus} from './simulator.mjs';
 
-const simulator = 'tiangong';
-const url = 'https://www.tiangong.cn/chat/universal/016';
+const simulator = 'bing';
+const url = 'https://www.bing.com/chat';
 
 // status
 let login = false;
@@ -48,8 +48,8 @@ await page.goto(url, {waitUntil: 'networkidle0'});
 
 // ---------------------------------------------------------------------------------------------------------------------
 const checkLoginStatues = async () => {
-    const loginButton = await page.$('[placeholder="登录后，可向我发送问题"]');
-    if (loginButton == null) {
+    const inputButton = await page.$('>>> .text-area');
+    if (inputButton != null) {
         login = true;
         return;
     }
@@ -77,11 +77,16 @@ const checkGenerateStatues = async () => {
 }
 
 const askQuestion = async () => {
+    const continueButton = await page.$('>>> [class="get-started-btn inline-explicit"]');
+    if (continueButton != null) {
+        await continueButton.focus();
+        await continueButton.click();
+    }
     if (questions.length === 0 || !login || generating) {
         return;
     }
     currentQuestion = questions.pop();
-    const inputSelector = '.el-textarea__inner';
+    const inputSelector = '>>> .text-area';
     await page.waitForSelector(inputSelector);
     await page.focus(inputSelector);
     await page.click(inputSelector);
@@ -99,7 +104,7 @@ const updateQuestion = async () => {
         return;
     }
 
-    const answers = await page.$$('.answerChatLiContent');
+    const answers = await page.$$('>>> [class="content user-select-text"]');
     if (answers.length <= 0) {
         return;
     }
@@ -126,30 +131,27 @@ const completeQuestion = async () => {
     if (!login || !generating) {
         return;
     }
-    const generatingButton = await page.$('[class="textHover text-[14px] font-normal leading-[170%] text-[#485568]"]');
-    if (generatingButton != null) {
+    const generatingButton = await page.$('>>> #stop-responding-button');
+    if (generatingButton == null) {
+        return;
+    }
+    const generatingText = await generatingButton.evaluate((el) => el.outerHTML);
+    console.log(generatingText)
+    if (generatingText.indexOf("disabled") < 0) {
         return;
     }
     const now = new Date().getTime();
     if (now - generateTime < 7 * 1000) {
         return;
     }
-    const copyEles = [];
-    const svgs = await page.$$('svg')
-    for (let i=0; i < svgs.length; i++) {
-        const valueHandle = await svgs[i].evaluate((el) => el.outerHTML);
-        if (valueHandle.indexOf("copy-Q-") >= 0) {
-            copyEles.push(svgs[i]);
-        }
-    }
-
+    const copyEles = await page.$$('>>> #copy-button');
     const length = copyEles.length;
-    console.log(length)
     if (length === 0) {
         return;
     }
     await copyBefore();
     const copyButton = copyEles[length - 1]
+    await copyButton.focus();
     await copyButton.click();
     const clipboard = await copyAfter();
     console.log("copy-----------------------------------------------------------------------------------------------------------");

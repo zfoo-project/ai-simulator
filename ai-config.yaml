@@ -3,6 +3,11 @@ headless: false
 simulators:
   - alibaba
   - baidu
+  - bytedance
+  - chatglm
+  - kimi
   - tencent
+  - tiangong
+#  - bing
 #  - google
 #  - openai

@@ -1,3 +1,4 @@
+port: 17313
 versionUrl: http://simulator.godot.fun/version.json
 headless: false
 simulators:
@@ -8,6 +9,6 @@ simulators:
   - kimi
   - tencent
   - tiangong
-#  - bing
-#  - google
+  - bing
+  - google
 #  - openai

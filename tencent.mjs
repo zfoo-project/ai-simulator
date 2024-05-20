@@ -1,9 +1,9 @@
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
-import {startWebsocketClient, registerPacketReceiver, send, delay} from './websocket.mjs';
+import {delay, registerPacketReceiver, send, startWebsocketClient} from './websocket.mjs';
 import SimulatorChatAsk from "./zfooes/packet/SimulatorChatAsk.mjs";
 import SimulatorChatAnswer from "./zfooes/packet/SimulatorChatAnswer.mjs";
-import {copyBefore, copyAfter, htmlToMarkdown, sendNotLoginStatus, sendRestartStatus} from './simulator.mjs';
+import {copyAfter, copyBefore, htmlToMarkdown, sendNotLoginStatus, sendRestartStatus} from './simulator.mjs';
 
 const simulator = 'tencent';
 const url = 'https://hunyuan.tencent.com/bot/chat';
@@ -133,13 +133,13 @@ const completeQuestion = async () => {
     if (now - generateTime < 7 * 1000) {
         return;
     }
-    const copyEles = await page.$$('.icon-copy2');
+    const copyEles = await page.$$('.style__opt-btn___HH3H2');
     const length = copyEles.length;
     if (length === 0) {
         return;
     }
     await copyBefore();
-    const copyButton = copyEles[0];
+    const copyButton = copyEles[2];
     await copyButton.focus();
     await copyButton.click();
     const clipboard = await copyAfter();
@@ -157,7 +157,7 @@ const completeQuestion = async () => {
 
 // ---------------------------------------------------------------------------------------------------------------------
 const tick = async () => {
-    await page.keyboard.press("PageDown");
+    // await page.keyboard.press("PageDown");
 }
 // ---------------------------------------------------------------------------------------------------------------------
 // initWebsocket

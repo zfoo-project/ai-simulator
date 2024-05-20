@@ -32,7 +32,7 @@ public class SimulatorConfig {
     private List<String> simulators;
 
     public void updateConfig(SimulatorConfig newConfig) {
-        if (NetUtils.isAvailablePort(newConfig.port)) {
+        if (NetUtils.isAvailablePort(newConfig.port) && newConfig.port > 0) {
             this.port = newConfig.port;
         }
         if (StringUtils.isNotEmpty(newConfig.nodePath)) {

@@ -73,7 +73,7 @@ public class SimulatorController {
         var markdown = answer.getMarkdown();
         // 只打印最后一句话
         var logMarkdown = substringAfterLastRegex(markdown, "[，,\\s]+");
-        var simulatorRequestId = Long.parseLong(StringUtils.format("{}{}", requestId, Math.abs(HashUtils.fnvHash(simulator))));
+        var simulatorRequestId = Long.parseLong(StringUtils.format("{}{}", requestId, simulatorService.simulatorId(simulator)));
         log.info("atSimulatorChatAnswer requestId:[{}] simulator:[{}] simulatorRequestId:[{}] markdown:[{}]", requestId, simulator, simulatorRequestId, logMarkdown);
         chatBotService.sendToChatBot(requestId, simulator, markdown);
     }

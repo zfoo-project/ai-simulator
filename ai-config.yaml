@@ -1,4 +1,3 @@
-port: 17313
 versionUrl: http://simulator.godot.fun/version.json
 headless: false
 simulators:

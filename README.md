@@ -1,4 +1,4 @@
-## ai-simulator AI模拟器 version-0.0.1
+## ai-simulator AI模拟器
 
 [本地运行的免费AI模拟器](https://github.com/zfoo-project/ai-simulator)，理论上可以支持所有网页端的AI，目前支持以下AI
 
@@ -33,3 +33,5 @@ ai模拟器，顾名思义，模拟用户本地浏览器操作的一个模拟程
 - [zfoo全场景RPC框架](https://github.com/zfoo-project/zfoo)
 - [lux-ui前端UI](https://github.com/yangjiakai/lux-ui)
 - [puppeteer浏览器控制](https://github.com/puppeteer/puppeteer)
+
+### version-0.0.1 代号白漂

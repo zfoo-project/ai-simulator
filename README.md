@@ -1,4 +1,4 @@
-## ai-simulator
+## ai-simulator AI模拟器 version-0.0.1
 
 [本地运行的免费AI模拟器](https://github.com/zfoo-project/ai-simulator)，理论上可以支持所有网页端的AI，目前支持以下AI
 

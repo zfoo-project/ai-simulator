@@ -1,9 +1,9 @@
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin from 'puppeteer-extra-plugin-stealth';
-import {startWebsocketClient, registerPacketReceiver, send, delay} from './websocket.mjs';
+import {delay, registerPacketReceiver, send, startWebsocketClient} from './websocket.mjs';
 import SimulatorChatAsk from "./zfooes/packet/SimulatorChatAsk.mjs";
 import SimulatorChatAnswer from "./zfooes/packet/SimulatorChatAnswer.mjs";
-import {copyBefore, copyAfter, htmlToMarkdown, sendNotLoginStatus, sendRestartStatus} from './simulator.mjs';
+import {copyAfter, copyBefore, htmlToMarkdown, sendNotLoginStatus, sendRestartStatus} from './simulator.mjs';
 
 const simulator = 'bing';
 const url = 'https://www.bing.com/chat';
@@ -136,7 +136,6 @@ const completeQuestion = async () => {
         return;
     }
     const generatingText = await generatingButton.evaluate((el) => el.outerHTML);
-    console.log(generatingText)
     if (generatingText.indexOf("disabled") < 0) {
         return;
     }
@@ -156,6 +155,12 @@ const completeQuestion = async () => {
     const clipboard = await copyAfter();
     console.log("copy-----------------------------------------------------------------------------------------------------------");
     console.log(clipboard);
+
+    const newTopicButton = await page.$('>>> .cta');
+    if (newTopicButton != null) {
+        await newTopicButton.focus();
+        await newTopicButton.click();
+    }
 
     const chatAnswer = new SimulatorChatAnswer();
     chatAnswer.requestId = currentQuestion.requestId;

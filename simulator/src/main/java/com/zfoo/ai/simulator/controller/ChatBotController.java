@@ -25,6 +25,7 @@ import com.zfoo.net.core.event.ServerSessionInactiveEvent;
 import com.zfoo.net.packet.common.Ping;
 import com.zfoo.net.packet.common.Pong;
 import com.zfoo.net.session.Session;
+import com.zfoo.protocol.util.FileUtils;
 import com.zfoo.protocol.util.StringUtils;
 import com.zfoo.scheduler.util.TimeUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -69,6 +70,7 @@ public class ChatBotController {
         NetContext.getRouter().send(session, new ChatBotRegisterResponse());
 
         chatBotService.sendToChatBot("zfoo", simulatorService.readme);
+        chatBotService.sendToChatBot("zfoo", "```" + FileUtils.LS + simulatorService.aiConfig + FileUtils.LS + "```");
     }
 
     @EventReceiver

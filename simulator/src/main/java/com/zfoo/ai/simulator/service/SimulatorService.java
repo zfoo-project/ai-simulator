@@ -38,7 +38,6 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
@@ -62,6 +61,8 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
     private ChatBotService chatBotService;
 
     public String readme = "欢迎使用AI模拟器！";
+    public String aiConfig = "自定义配置";
+
 
     @SneakyThrows
     @Override
@@ -78,7 +79,7 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
 
         // 更新热更文件
         updateVersion();
-        loadReadme();
+        loadReadmeAndConfig();
 
         // 启动websocket服务器
         var port = simulatorConfig.getPort();
@@ -133,10 +134,14 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
         }
     }
 
-    private void loadReadme() {
+    private void loadReadmeAndConfig() {
         var readmeFile = new File("README.md");
         if (readmeFile.exists()) {
             readme = FileUtils.readFileToString(readmeFile);
+        }
+        var aiConfigFile = new File("ai-config.yaml");
+        if (aiConfigFile.exists()) {
+            aiConfig = FileUtils.readFileToString(aiConfigFile);
         }
     }
 

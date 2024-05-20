@@ -61,7 +61,7 @@ public class SimulatorController {
         var simulatorSessionIds = simulatorService.simulatorSessionMap.computeIfAbsent(simulator, it -> new ConcurrentHashSet<>());
         simulatorSessionIds.add(sid);
         NetContext.getRouter().send(session, new SimulatorRegisterAnswer());
-        chatBotService.sendToChatBot(simulator, StringUtils.format("模拟器 {} 注册成功", simulator));
+        chatBotService.sendToChatBot(simulator, StringUtils.format("模拟器 {} 注册成功，成功连接服务器 sid:[{}]", simulator, sid));
     }
 
     @PacketReceiver

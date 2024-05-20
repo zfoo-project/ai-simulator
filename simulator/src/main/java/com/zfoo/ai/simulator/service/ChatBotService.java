@@ -14,13 +14,14 @@ package com.zfoo.ai.simulator.service;
 
 import com.zfoo.ai.simulator.packet.ChatBotNotice;
 import com.zfoo.net.NetContext;
-import com.zfoo.net.util.HashUtils;
 import com.zfoo.protocol.collection.concurrent.ConcurrentHashSet;
 import com.zfoo.protocol.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -30,8 +31,6 @@ import java.util.concurrent.atomic.AtomicLong;
 @Component
 public class ChatBotService {
 
-    @Autowired
-    private SimulatorService simulatorService;
 
     public ConcurrentHashSet<Long> chatBotSessions = new ConcurrentHashSet<>();
 
@@ -42,12 +41,20 @@ public class ChatBotService {
     }
 
     public void sendToChatBot(long requestId, String simulator, String message) {
-        var simulatorRequestId = Long.parseLong(StringUtils.format("{}{}", requestId, simulatorService.simulatorId(simulator)));
+        var simulatorRequestId = Long.parseLong(StringUtils.format("{}{}", requestId, simulatorId(simulator)));
         var notice = new ChatBotNotice(simulatorRequestId, simulator, message);
         for (var sid : chatBotSessions) {
             var session = NetContext.getSessionManager().getServerSession(sid);
             NetContext.getRouter().send(session, notice, null);
         }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    private ConcurrentMap<String, Integer> simulatorIdMap = new ConcurrentHashMap<>();
+    private AtomicInteger simulatorIdAtomic = new AtomicInteger(10000);
+
+    public int simulatorId(String simulator) {
+        return simulatorIdMap.computeIfAbsent(simulator, it -> simulatorIdAtomic.incrementAndGet());
     }
 
 }

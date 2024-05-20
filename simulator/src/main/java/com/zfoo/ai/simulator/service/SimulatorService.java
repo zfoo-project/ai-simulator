@@ -39,9 +39,7 @@ import org.yaml.snakeyaml.Yaml;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author godotg
@@ -191,10 +189,4 @@ public class SimulatorService implements ApplicationListener<AppStartEvent> {
         return null;
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
-    private ConcurrentMap<String, Integer> simulatorIdMap = new ConcurrentHashMap<>();
-    private AtomicInteger simulatorIdAtomic = new AtomicInteger(10000);
-    public int simulatorId(String simulator) {
-        return simulatorIdMap.computeIfAbsent(simulator, it -> simulatorIdAtomic.incrementAndGet());
-    }
 }

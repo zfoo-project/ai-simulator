@@ -1,3 +1,7 @@
+## 这个项目已经停止维护，对应网站的页面更新同时也需要更新js源代码匹配对应的标签，所以没时间维护。
+
+## 原理解析可以看下[视频教程](https://www.bilibili.com/video/BV19U411d7jM/?vd_source=4f3b881aea002f58e78c896adbef428d)，可以自己修改源代码。
+
 ## ai-simulator AI模拟器
 
 [本地运行的免费AI模拟器](https://github.com/zfoo-project/ai-simulator)，理论上可以支持所有网页端的AI，目前支持以下AI
